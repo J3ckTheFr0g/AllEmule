@@ -1,0 +1,239 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDeviceStateMachine } from '../../hooks/useDeviceStateMachine';
+import { readRomFile } from '../../detection/consoleDetector';
+import { AmbiguousRomError } from '../../detection/consoleDetector';
+import { CONSOLE_SPECS, ConsoleType } from '../../models/consoleTypes';
+import './DeviceShell.css';
+
+const ANIM_DURATIONS_MS = {
+  insert: 900,
+  morph: 700,
+  powerOn: 1200,
+  powerOff: 500,
+};
+
+export function DeviceShell() {
+  const { machine, state, currentConsole } = useDeviceStateMachine();
+  const [romBlobUrl, setRomBlobUrl] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const emulatorContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleFileSelected = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      setErrorMessage(null);
+
+      try {
+        const bytes = await readRomFile(file);
+        machine.loadRom(bytes, file.name);
+        setRomBlobUrl(URL.createObjectURL(file));
+      } catch (err) {
+        if (err instanceof AmbiguousRomError) {
+          setErrorMessage(
+            `Console incertaine pour "${err.fileName}" (hypothese: ${err.bestGuess}). ` +
+              `Confirmation manuelle a implementer.`,
+          );
+        } else {
+          setErrorMessage((err as Error).message);
+        }
+      }
+
+      e.target.value = '';
+    },
+    [machine],
+  );
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
+    if (state === 'romInserting') {
+      timer = setTimeout(
+        () => machine.onInsertAnimationComplete(),
+        ANIM_DURATIONS_MS.insert,
+      );
+    } else if (state === 'morphing') {
+      timer = setTimeout(
+        () => machine.onMorphAnimationComplete(),
+        ANIM_DURATIONS_MS.morph,
+      );
+    } else if (state === 'poweringOn') {
+      timer = setTimeout(
+        () => machine.onPowerOnAnimationComplete(),
+        ANIM_DURATIONS_MS.powerOn,
+      );
+    } else if (state === 'poweringOff') {
+      timer = setTimeout(() => {
+        machine.onPowerOffAnimationComplete();
+        setRomBlobUrl(null);
+      }, ANIM_DURATIONS_MS.powerOff);
+    }
+
+    return () => clearTimeout(timer);
+  }, [state, machine]);
+
+  useEffect(() => {
+    if (state !== 'playing' || !currentConsole || !romBlobUrl) return;
+    const container = emulatorContainerRef.current;
+    if (!container) return;
+
+    const spec = CONSOLE_SPECS[currentConsole];
+    if (spec.supportStatus !== 'mvp') {
+      setErrorMessage(
+        `Aucun coeur EmulatorJS disponible pour ${currentConsole} pour le moment.`,
+      );
+      return;
+    }
+
+    // React 18 StrictMode monte/demonte cet effet deux fois en dev pour
+    // verifier son idempotence. Sans cette garde, le nettoyage videait le
+    // conteneur pendant que le <script> EmulatorJS chargeait encore en
+    // arriere-plan, ce qui empechait le jeu de demarrer une fois sur deux.
+    const injectionKey = `${currentConsole}:${romBlobUrl}`;
+    if (container.dataset.ejsKey === injectionKey) return;
+
+    container.innerHTML = '';
+    container.dataset.ejsKey = injectionKey;
+
+    const playerDiv = document.createElement('div');
+    playerDiv.id = 'ejs-player';
+    container.appendChild(playerDiv);
+
+    (window as any).EJS_player = '#ejs-player';
+    (window as any).EJS_core = spec.emulatorCore;
+    (window as any).EJS_gameUrl = romBlobUrl;
+    (window as any).EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+    (window as any).EJS_startOnLoaded = true;
+    // Evite de requerir les en-tetes COOP/COEP (SharedArrayBuffer) pour
+    // fonctionner aussi bien en dev qu'une fois deploye sur GitHub Pages.
+    (window as any).EJS_threads = false;
+    // Console d'origine : pas d'avance/ralenti rapide.
+    (window as any).EJS_Buttons = {
+      fastForward: false,
+      slowMotion: false,
+    };
+    (window as any).EJS_onGameStart = () => setErrorMessage(null);
+    // EJS_onExit se declenche quand EmulatorJS quitte/plante le jeu en cours
+    // (aucun callback "onCrash" dedie n'est documente par EmulatorJS a ce
+    // jour : c'est le signal le plus proche d'un arret inattendu du core).
+    (window as any).EJS_onExit = () =>
+      setErrorMessage(
+        "EmulatorJS a signale la fin/le crash du jeu (EJS_onExit) alors que l'appareil " +
+          "etait toujours en etat 'playing'.",
+      );
+
+    const script = document.createElement('script');
+    script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+    script.async = true;
+    script.onerror = () =>
+      setErrorMessage("Impossible de charger EmulatorJS (verifie la connexion internet).");
+    container.appendChild(script);
+  }, [state, currentConsole, romBlobUrl]);
+
+  // Instrumentation : toute exception JS non catchee ou promesse rejetee
+  // pendant que le jeu tourne (crash du core WASM, erreur EmulatorJS, etc.)
+  // est remontee dans le bandeau d'erreur existant au lieu de couper le jeu
+  // silencieusement. Actif uniquement en etat "playing" et nettoye a la sortie
+  // pour ne pas fuiter entre montages/etats.
+  useEffect(() => {
+    if (state !== 'playing') return;
+
+    const handleWindowError = (event: ErrorEvent) => {
+      const detail = event.message || String(event.error ?? 'Erreur inconnue');
+      setErrorMessage(
+        `Erreur JS pendant l'execution du jeu : ${detail} ` +
+          `(${event.filename ?? '?'}:${event.lineno ?? '?'})`,
+      );
+    };
+
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const reason =
+        event.reason instanceof Error
+          ? event.reason.message
+          : String(event.reason ?? 'raison inconnue');
+      setErrorMessage(`Promesse rejetee non geree pendant le jeu : ${reason}`);
+    };
+
+    window.addEventListener('error', handleWindowError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener('error', handleWindowError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
+  }, [state]);
+
+  // Nettoyage reel uniquement quand on quitte l'etat "playing" (extinction),
+  // separe de l'effet d'injection pour ne pas interferer avec le double
+  // montage de StrictMode ci-dessus.
+  useEffect(() => {
+    if (state === 'playing') return;
+    const container = emulatorContainerRef.current;
+    if (container && container.dataset.ejsKey) {
+      container.innerHTML = '';
+      delete container.dataset.ejsKey;
+    }
+  }, [state]);
+
+  const orientationClass =
+    currentConsole && CONSOLE_SPECS[currentConsole].orientation === 'landscape'
+      ? 'orientation-landscape'
+      : 'orientation-portrait';
+
+  return (
+    <div className={`device-shell ${orientationClass}`}>
+      {errorMessage && <div className="device-shell__error">{errorMessage}</div>}
+
+      <div className={`device-shell__body device-shell__body--${state}`}>
+        {state === 'off' && (
+          <div className="device-shell__prompt">
+            <p>Console eteinte</p>
+            <button onClick={() => fileInputRef.current?.click()}>
+              Charger une ROM
+            </button>
+          </div>
+        )}
+
+        {state === 'romInserting' && (
+          <div className="device-shell__cartridge-insert" />
+        )}
+
+        {state === 'morphing' && (
+          <div className="device-shell__morph" />
+        )}
+
+        {state === 'awaitingPowerOn' && (
+          <div className="device-shell__prompt">
+            <p>ROM chargee - {currentConsole}</p>
+            <button onClick={() => machine.pressPowerOn()}>Allumer</button>
+          </div>
+        )}
+
+        {state === 'poweringOn' && <div className="device-shell__boot-flash" />}
+
+        {state === 'playing' && (
+          <>
+            <div ref={emulatorContainerRef} className="device-shell__emulator" />
+            <button
+              className="device-shell__power-off"
+              onClick={() => machine.pressPowerOff()}
+            >
+              Eteindre
+            </button>
+          </>
+        )}
+
+        {state === 'poweringOff' && <div className="device-shell__boot-flash" />}
+      </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".gb,.gbc,.gba,.lnx,.gg,.pce,.ngp,.ngc"
+        onChange={handleFileSelected}
+        style={{ display: 'none' }}
+      />
+    </div>
+  );
+}
