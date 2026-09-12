@@ -13,14 +13,18 @@ export function useDeviceStateMachine() {
   const [currentConsole, setCurrentConsole] = useState<ConsoleType | null>(
     machine.getCurrentConsole(),
   );
+  const [pendingConsole, setPendingConsole] = useState<ConsoleType | null>(
+    machine.getPendingConsole(),
+  );
 
   useEffect(() => {
     const unsubscribe = machine.onStateChange((next) => {
       setState(next);
       setCurrentConsole(machine.getCurrentConsole());
+      setPendingConsole(machine.getPendingConsole());
     });
     return unsubscribe;
   }, [machine]);
 
-  return { machine, state, currentConsole };
+  return { machine, state, currentConsole, pendingConsole };
 }

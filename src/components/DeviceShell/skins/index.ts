@@ -5,25 +5,26 @@ import { GameBoySkin } from './GameBoySkin';
 import { GameBoyColorSkin } from './GameBoyColorSkin';
 import { GameBoyAdvanceSkin } from './GameBoyAdvanceSkin';
 import { GameBoyAdvanceSpSkin } from './GameBoyAdvanceSpSkin';
+import { AtariLynxSkin } from './AtariLynxSkin';
+import { SegaGameGearSkin } from './SegaGameGearSkin';
+import { PcEngineGtSkin } from './PcEngineGtSkin';
+import { NeoGeoPocketSkin } from './NeoGeoPocketSkin';
 
 /**
- * Mapping ConsoleType -> composant Skin.
- *
- * NOTE : ce fichier ne couvre pour l'instant que la famille Game Boy /
- * Game Boy Color / Game Boy Advance / Game Boy Advance SP. Les autres
- * familles de consoles (Atari Lynx, Sega Game Gear, PC Engine GT,
- * Neo Geo Pocket, etc. - dont les composants Skin existent deja dans ce
- * dossier) sont ajoutees par ailleurs et doivent etre fusionnees ici pour
- * obtenir une couverture complete de ConsoleType. A ce stade le Record
- * est volontairement partiel (Partial<Record<...>>) pour ne pas
- * pretendre couvrir des consoles dont le mapping n'a pas encore ete
- * merge dans ce fichier.
+ * Mapping ConsoleType -> composant Skin. Couvre toutes les consoles
+ * `supportStatus: 'mvp'` de CONSOLE_SPECS. Les consoles exclues (Watara
+ * Supervision, Game & Watch, GP32) n'ont pas de skin ici : elles passent
+ * par <UnsupportedConsoleNotice> dans DeviceShell au lieu d'un skin.
  */
 export const CONSOLE_SKINS: Partial<Record<ConsoleType, ComponentType<SkinProps>>> = {
   [ConsoleType.GameBoy]: GameBoySkin,
   [ConsoleType.GameBoyColor]: GameBoyColorSkin,
   [ConsoleType.GameBoyAdvance]: GameBoyAdvanceSkin,
   [ConsoleType.GameBoyAdvanceSp]: GameBoyAdvanceSpSkin,
+  [ConsoleType.AtariLynx]: AtariLynxSkin,
+  [ConsoleType.SegaGameGear]: SegaGameGearSkin,
+  [ConsoleType.PcEngineGt]: PcEngineGtSkin,
+  [ConsoleType.NeoGeoPocket]: NeoGeoPocketSkin,
 };
 
 export type { SkinProps };
@@ -32,4 +33,9 @@ export {
   GameBoyColorSkin,
   GameBoyAdvanceSkin,
   GameBoyAdvanceSpSkin,
+  AtariLynxSkin,
+  SegaGameGearSkin,
+  PcEngineGtSkin,
+  NeoGeoPocketSkin,
 };
+export { UnsupportedConsoleNotice } from './UnsupportedConsoleNotice';

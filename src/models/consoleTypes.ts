@@ -136,6 +136,22 @@ export const CONSOLE_SPECS: Record<ConsoleType, ConsoleSpec> = {
   },
 };
 
+/** Nom lisible par humain, pour l'UI (prompts, message "non jouable", etc.). */
+export const CONSOLE_DISPLAY_NAMES: Record<ConsoleType, string> = {
+  [ConsoleType.GameBoy]: 'Game Boy',
+  [ConsoleType.GameBoyColor]: 'Game Boy Color',
+  [ConsoleType.GameBoyAdvance]: 'Game Boy Advance',
+  [ConsoleType.GameBoyAdvanceSp]: 'Game Boy Advance SP',
+  [ConsoleType.AtariLynx]: 'Atari Lynx',
+  [ConsoleType.SegaGameGear]: 'Sega Game Gear',
+  [ConsoleType.PcEngineGt]: 'PC Engine GT',
+  [ConsoleType.WataraSupervision]: 'Watara Supervision',
+  [ConsoleType.NeoGeoPocket]: 'Neo Geo Pocket',
+  [ConsoleType.Gp32]: 'GP32',
+  [ConsoleType.GameAndWatch]: 'Game & Watch',
+  [ConsoleType.Unknown]: 'Console inconnue',
+};
+
 export interface GameAndWatchSkin {
   gameId: string;
   riveAsset: string;

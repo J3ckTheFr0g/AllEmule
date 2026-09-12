@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeviceStateMachine } from '../../hooks/useDeviceStateMachine';
 import { readRomFile } from '../../detection/consoleDetector';
 import { AmbiguousRomError } from '../../detection/consoleDetector';
-import { CONSOLE_SPECS, ConsoleType } from '../../models/consoleTypes';
+import { CONSOLE_SPECS, CONSOLE_DISPLAY_NAMES, ConsoleType } from '../../models/consoleTypes';
+import { CONSOLE_SKINS, UnsupportedConsoleNotice } from './skins';
 import './DeviceShell.css';
 
 const ANIM_DURATIONS_MS = {
@@ -13,7 +14,7 @@ const ANIM_DURATIONS_MS = {
 };
 
 export function DeviceShell() {
-  const { machine, state, currentConsole } = useDeviceStateMachine();
+  const { machine, state, currentConsole, pendingConsole } = useDeviceStateMachine();
   const [romBlobUrl, setRomBlobUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -80,9 +81,9 @@ export function DeviceShell() {
 
     const spec = CONSOLE_SPECS[currentConsole];
     if (spec.supportStatus !== 'mvp') {
-      setErrorMessage(
-        `Aucun coeur EmulatorJS disponible pour ${currentConsole} pour le moment.`,
-      );
+      // Pas de bandeau d'erreur ici : le rendu affiche deja
+      // <UnsupportedConsoleNotice> a la place de l'emulateur dans ce cas
+      // (voir isUnsupported plus bas).
       return;
     }
 
@@ -176,55 +177,83 @@ export function DeviceShell() {
     }
   }, [state]);
 
+  // Avant l'allumage (insertion/morph/attente), le boitier a afficher est
+  // celui de la ROM en cours de chargement (pendingConsole), pas l'ancien
+  // currentConsole qui ne bascule qu'a pressPowerOn().
+  const isPrePower =
+    state === 'romInserting' || state === 'morphing' || state === 'awaitingPowerOn';
+  const displayConsole = isPrePower ? pendingConsole : currentConsole;
+  const displaySpec = displayConsole ? CONSOLE_SPECS[displayConsole] : null;
+  const SkinComponent = displayConsole ? CONSOLE_SKINS[displayConsole] : undefined;
+  const isUnsupported = state === 'playing' && !!displaySpec && displaySpec.supportStatus !== 'mvp';
+
   const orientationClass =
-    currentConsole && CONSOLE_SPECS[currentConsole].orientation === 'landscape'
+    displaySpec && displaySpec.orientation === 'landscape'
       ? 'orientation-landscape'
       : 'orientation-portrait';
+
+  const innerContent = (
+    <>
+      {state === 'off' && (
+        <div className="device-shell__prompt">
+          <p>Console eteinte</p>
+          <button onClick={() => fileInputRef.current?.click()}>
+            Charger une ROM
+          </button>
+        </div>
+      )}
+
+      {state === 'romInserting' && (
+        <div className="device-shell__cartridge-insert" />
+      )}
+
+      {state === 'morphing' && (
+        <div className="device-shell__morph" />
+      )}
+
+      {state === 'awaitingPowerOn' && (
+        <div className="device-shell__prompt">
+          <p>
+            ROM chargee -{' '}
+            {displayConsole ? CONSOLE_DISPLAY_NAMES[displayConsole] : ''}
+          </p>
+          <button onClick={() => machine.pressPowerOn()}>Allumer</button>
+        </div>
+      )}
+
+      {state === 'poweringOn' && <div className="device-shell__boot-flash" />}
+
+      {state === 'playing' && !isUnsupported && (
+        <>
+          <div ref={emulatorContainerRef} className="device-shell__emulator" />
+          <button
+            className="device-shell__power-off"
+            onClick={() => machine.pressPowerOff()}
+          >
+            Eteindre
+          </button>
+        </>
+      )}
+
+      {state === 'poweringOff' && <div className="device-shell__boot-flash" />}
+    </>
+  );
 
   return (
     <div className={`device-shell ${orientationClass}`}>
       {errorMessage && <div className="device-shell__error">{errorMessage}</div>}
 
       <div className={`device-shell__body device-shell__body--${state}`}>
-        {state === 'off' && (
-          <div className="device-shell__prompt">
-            <p>Console eteinte</p>
-            <button onClick={() => fileInputRef.current?.click()}>
-              Charger une ROM
-            </button>
-          </div>
+        {isUnsupported && displayConsole ? (
+          <UnsupportedConsoleNotice
+            consoleName={CONSOLE_DISPLAY_NAMES[displayConsole]}
+            onDismiss={() => machine.cancelUnsupportedConsole()}
+          />
+        ) : SkinComponent ? (
+          <SkinComponent screenContent={innerContent} />
+        ) : (
+          innerContent
         )}
-
-        {state === 'romInserting' && (
-          <div className="device-shell__cartridge-insert" />
-        )}
-
-        {state === 'morphing' && (
-          <div className="device-shell__morph" />
-        )}
-
-        {state === 'awaitingPowerOn' && (
-          <div className="device-shell__prompt">
-            <p>ROM chargee - {currentConsole}</p>
-            <button onClick={() => machine.pressPowerOn()}>Allumer</button>
-          </div>
-        )}
-
-        {state === 'poweringOn' && <div className="device-shell__boot-flash" />}
-
-        {state === 'playing' && (
-          <>
-            <div ref={emulatorContainerRef} className="device-shell__emulator" />
-            <button
-              className="device-shell__power-off"
-              onClick={() => machine.pressPowerOff()}
-            >
-              Eteindre
-            </button>
-          </>
-        )}
-
-        {state === 'poweringOff' && <div className="device-shell__boot-flash" />}
       </div>
 
       <input
