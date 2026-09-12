@@ -103,6 +103,11 @@ export class ConsoleDetector {
     const size = bytes.length;
 
     switch (ext) {
+      // Certains dumps Lynx circulent sans le header 64 octets "LYNX"
+      // (format brut non No-Intro) : le magic bytes tryLynxMagic() ne les
+      // detecte pas, d'ou ce fallback par extension en complement.
+      case 'lnx':
+        return { type: ConsoleType.AtariLynx, confidence: 'ambiguous' };
       case 'gg':
         return { type: ConsoleType.SegaGameGear, confidence: 'probable' };
       case 'pce': {

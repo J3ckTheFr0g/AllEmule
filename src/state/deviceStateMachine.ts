@@ -27,6 +27,17 @@ export class DeviceStateMachine {
     return this.currentConsole;
   }
 
+  /**
+   * Console detectee pour la ROM en cours de chargement, avant l'allumage
+   * (pendant romInserting/morphing/awaitingPowerOn). Distinct de
+   * getCurrentConsole(), qui ne bascule qu'a pressPowerOn() : necessaire
+   * pour que l'UI puisse afficher le bon boitier/skin avant que
+   * l'utilisateur n'ait appuye sur "Allumer".
+   */
+  getPendingConsole(): ConsoleType | null {
+    return this.pendingConsole;
+  }
+
   onStateChange(listener: Listener): () => void {
     this.listeners.push(listener);
     return () => {
@@ -80,6 +91,19 @@ export class DeviceStateMachine {
   onPowerOnAnimationComplete(): void {
     if (this.state !== 'poweringOn') return;
     this.setState('playing');
+  }
+
+  /**
+   * Retour direct a "off" sans passer par poweringOff, utilise quand une
+   * console detectee s'avere non jouable (aucun coeur EmulatorJS) : il n'y
+   * a pas de jeu en cours a arreter proprement, juste l'ecran d'info a
+   * fermer.
+   */
+  cancelUnsupportedConsole(): void {
+    if (this.state === 'off' || this.state === 'poweringOff') return;
+    this.pendingConsole = null;
+    this.currentConsole = null;
+    this.setState('off');
   }
 
   pressPowerOff(): void {
