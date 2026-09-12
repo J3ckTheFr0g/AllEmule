@@ -1,0 +1,98 @@
+.unsupported-console {
+  --uc-case: #3a3d42;
+  --uc-case-light: #55595f;
+  --uc-case-dark: #202226;
+  --uc-accent: #9a9fa6;
+  --uc-warn: #c9a13b;
+
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  border-radius: 18px;
+  background: linear-gradient(160deg, var(--uc-case-light), var(--uc-case) 45%, var(--uc-case-dark));
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.45),
+    inset 0 2px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -6px 12px rgba(0, 0, 0, 0.35);
+  padding: 5%;
+  box-sizing: border-box;
+}
+
+.unsupported-console__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4%;
+}
+
+.unsupported-console__screen-bezel {
+  width: 100%;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #16171a, #26282c);
+  border: 3px solid #0d0e10;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.04), inset 0 4px 10px rgba(0, 0, 0, 0.6);
+  padding: 6%;
+}
+
+.unsupported-console__screen {
+  border-radius: 4px;
+  background: #0a0f0a;
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.8);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.unsupported-console__icon {
+  color: var(--uc-warn);
+  margin-bottom: 4px;
+}
+
+.unsupported-console__title {
+  margin: 0;
+  font: 700 15px/1.4 'Courier New', monospace;
+  color: #e8e6df;
+  letter-spacing: 0.3px;
+}
+
+.unsupported-console__reason {
+  margin: 0;
+  font: 400 12.5px/1.5 'Courier New', monospace;
+  color: #b9c3b9;
+  max-width: 44ch;
+}
+
+.unsupported-console__hint {
+  margin: 0;
+  font: 400 11px/1.5 'Courier New', monospace;
+  color: var(--uc-accent);
+  max-width: 44ch;
+}
+
+.unsupported-console__dismiss {
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font: 700 12px/1 'Courier New', monospace;
+  color: #eee;
+  cursor: pointer;
+  background: linear-gradient(180deg, #4a4e54, #2b2d31);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+.unsupported-console__dismiss:active {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 480px) {
+  .unsupported-console__reason,
+  .unsupported-console__hint {
+    max-width: 32ch;
+  }
+}
