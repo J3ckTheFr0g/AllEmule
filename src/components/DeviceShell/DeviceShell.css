@@ -14,6 +14,19 @@ body {
   height: 100%;
 }
 
+/* EJS_browserMode=2 (voir DeviceShell.tsx) ne suffit pas a supprimer
+   l'overlay tactile virtuel natif d'EmulatorJS sur un vrai telephone :
+   il ne desactive que la detection UA "mobile", mais EmulatorJS l'affiche
+   des qu'un ecran tactile REEL est detecte (hasTouchScreen), independamment
+   de ce reglage - constate en test sur telephone malgre browserMode=2.
+   Masquage CSS direct et donc garanti, quelle que soit sa logique interne :
+   .ejs_virtualGamepad_parent est le conteneur racine de cet overlay
+   (croix/A/B/Select/Start/avance-rapide/ralenti semi-transparents) qui se
+   superposait au jeu dans le petit ecran du boitier. */
+.ejs_virtualGamepad_parent {
+  display: none !important;
+}
+
 .device-shell {
   position: fixed;
   inset: 0;
