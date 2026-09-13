@@ -1,0 +1,114 @@
+.lynxShelf-case {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 8 / 5;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #6b6f76 0%, #45484d 55%, #2c2e32 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.4);
+  padding: 7% 6%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4%;
+}
+
+.lynxShelf-topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lynxShelf-brand {
+  font: italic 800 8px/1 Arial, sans-serif;
+  color: #e8823a;
+  letter-spacing: 0.02em;
+}
+
+.lynxShelf-powerDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff8b8b, #c81f2e 70%);
+}
+
+.lynxShelf-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 4%;
+}
+
+.lynxShelf-screenBezel {
+  border-radius: 6px;
+  background: linear-gradient(135deg, #16171a, #26282c);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+  padding: 8%;
+  display: flex;
+}
+
+.lynxShelf-screen {
+  flex: 1;
+  background: #0a0f0a;
+  border-radius: 2px;
+  box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.6);
+}
+
+.lynxShelf-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4% 0;
+}
+
+.lynxShelf-dpad {
+  position: relative;
+  width: 60%;
+  aspect-ratio: 1;
+}
+
+.lynxShelf-dpadCross {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #2a2c30, #131416);
+  clip-path: polygon(36% 0%, 64% 0%, 64% 36%, 100% 36%, 100% 64%, 64% 64%, 64% 100%, 36% 100%, 36% 64%, 0% 64%, 0% 36%, 36% 36%);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.lynxShelf-diamond {
+  position: relative;
+  width: 70%;
+  aspect-ratio: 1;
+}
+
+.lynxShelf-btn {
+  position: absolute;
+  width: 34%;
+  height: 34%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #7d1f18, #c23b2e 60%, #7a241c);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+.lynxShelf-btn--top {
+  top: 0;
+  left: 33%;
+}
+
+.lynxShelf-btn--right {
+  top: 33%;
+  right: 0;
+}
+
+.lynxShelf-btn--bottom {
+  bottom: 0;
+  left: 33%;
+}
+
+.lynxShelf-btn--left {
+  top: 33%;
+  left: 0;
+}

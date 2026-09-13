@@ -1,0 +1,96 @@
+.pceGtShelf-case {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 8 / 9;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #38393c 0%, #222325 45%, #121213 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.12),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.4);
+  padding: 7%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3%;
+}
+
+.pceGtShelf-topRow {
+  align-self: flex-start;
+}
+
+.pceGtShelf-brand {
+  font-size: 6px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: #9a9b9d;
+}
+
+.pceGtShelf-screenBezel {
+  width: 100%;
+  flex: 1;
+  border-radius: 4px;
+  background: #050506;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.6);
+  padding: 6%;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.pceGtShelf-screen {
+  flex: 1;
+  background: #16171a;
+  border-radius: 2px;
+}
+
+.pceGtShelf-gt {
+  align-self: flex-end;
+  font-size: 8px;
+  font-weight: 800;
+  font-style: italic;
+  color: #e2394a;
+  margin-top: -2%;
+}
+
+.pceGtShelf-controls {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 4%;
+}
+
+.pceGtShelf-dpad {
+  width: 60%;
+  justify-self: start;
+}
+
+.pceGtShelf-selectRun {
+  display: flex;
+  flex-direction: column;
+  gap: 15%;
+  justify-self: center;
+}
+
+.pceGtShelf-toggle {
+  width: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #4a4b4d, #1c1d1e);
+}
+
+.pceGtShelf-actionBtns {
+  display: flex;
+  flex-direction: column;
+  gap: 15%;
+  justify-self: end;
+}
+
+.pceGtShelf-actionBtn {
+  width: 40%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #4a4b4e, #1c1d1f 65%, #0a0a0b 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
