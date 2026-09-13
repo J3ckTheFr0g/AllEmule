@@ -199,3 +199,47 @@
     width: 60px;
   }
 }
+
+/* Tenue portrait (telephone tenu vertical) : memes elements que la tenue
+   paysage, simplement empiles (ecran en haut, croix + boutons en bas)
+   plutot que cote a cote. Voir AtariLynxSkin.tsx pour la bascule via
+   useViewportOrientation. */
+.lynx-skin--portrait {
+  aspect-ratio: 5 / 8;
+}
+
+.lynx-skin--portrait .lynx-skin__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4%;
+}
+
+.lynx-skin--portrait .lynx-skin__screen-bay {
+  flex: 1.4;
+}
+
+.lynx-skin--portrait .lynx-skin__controls {
+  flex: 1;
+  align-items: flex-start;
+}
+
+.lynx-skin--portrait .lynx-skin__buttons {
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.lynx-skin--portrait .lynx-skin__vents {
+  top: auto;
+  bottom: 3%;
+  left: 8%;
+  right: 8%;
+  width: auto;
+  height: 3%;
+  background: repeating-linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.5) 0,
+    rgba(0, 0, 0, 0.5) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+}

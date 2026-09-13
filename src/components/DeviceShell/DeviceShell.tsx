@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { useDeviceStateMachine } from '../../hooks/useDeviceStateMachine';
+import { useViewportOrientation } from '../../hooks/useViewportOrientation';
 import { readRomFile } from '../../detection/consoleDetector';
 import { AmbiguousRomError } from '../../detection/consoleDetector';
 import {
@@ -40,8 +41,20 @@ const SKIN_DESIGN_SIZE: Partial<Record<ConsoleType, { width: number; height: num
   [ConsoleType.SegaGameGear]: { width: 460, height: 288 },
 };
 
+/**
+ * Consoles dont le skin propose une mise en page alternative quand le
+ * telephone est tenu en portrait (voir AtariLynxSkin + useViewportOrientation)
+ * plutot que la seule orientation figee de CONSOLE_SPECS. Doit
+ * correspondre a l'aspect-ratio `.xxx-skin--portrait` declare dans le CSS
+ * du skin concerne.
+ */
+const SKIN_DESIGN_SIZE_PORTRAIT: Partial<Record<ConsoleType, { width: number; height: number }>> = {
+  [ConsoleType.AtariLynx]: { width: 300, height: 480 },
+};
+
 export function DeviceShell() {
   const { machine, state, currentConsole, pendingConsole } = useDeviceStateMachine();
+  const viewportOrientation = useViewportOrientation();
   const [romBlobUrl, setRomBlobUrl] = useState<string | null>(null);
   const [loadedFileName, setLoadedFileName] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -340,7 +353,10 @@ export function DeviceShell() {
     </div>
   );
 
-  const designSize = displayConsole ? SKIN_DESIGN_SIZE[displayConsole] : undefined;
+  const designSize = displayConsole
+    ? (viewportOrientation === 'portrait' && SKIN_DESIGN_SIZE_PORTRAIT[displayConsole]) ||
+      SKIN_DESIGN_SIZE[displayConsole]
+    : undefined;
   const skinElement = SkinComponent ? <SkinComponent screenContent={innerContent} /> : null;
 
   return (
