@@ -1,8 +1,28 @@
+/* Verrouille la page en plein ecran fixe : pas de scroll ni de rebond
+   tactile (pull-to-refresh, rubber-band iOS) qui revelerait du vide de
+   part et d'autre du boitier. */
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #1a1a1a;
+}
+
+#root {
+  height: 100%;
+}
+
 .device-shell {
+  position: fixed;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
   background: #1a1a1a;
   font-family: 'Courier New', monospace;
   color: #e0e0e0;
@@ -20,22 +40,33 @@
   font-size: 14px;
 }
 
-/* Conteneur purement fonctionnel (centrage + taille max adaptative a la
-   fenetre) : aucun decor propre, le boitier reel vient du skin de la
-   console (GameBoySkin, etc.) qui dessine sa propre silhouette. Un cadre
-   generique en plus du boitier du skin donnait un effet "double cadre"
-   disgracieux. */
+/* Conteneur purement fonctionnel (centrage) : aucun decor propre, le
+   boitier reel vient du skin de la console (GameBoySkin, etc.) qui
+   dessine sa propre silhouette. Un cadre generique en plus du boitier du
+   skin donnait un effet "double cadre" disgracieux. */
 .device-shell__body {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  width: min(90vw, 300px);
-  max-height: 85vh;
+  width: 100%;
+  height: 100%;
 }
 
-.orientation-landscape .device-shell__body {
-  width: min(92vw, 520px);
+/* Chaque skin est dessine a une taille de reference fixe (ex: 280x460
+   pour le Game Boy) pour garder des proportions internes pixel-perfect
+   (D-pad, boutons...). Plutot que de le contraindre a une largeur vw
+   arbitraire (ce qui laissait des bandes noires sur les ecrans plus
+   larges que le plafond choisi), on l'agrandit/reduit en un bloc via
+   transform:scale jusqu'a remplir l'ecran disponible (94% largeur, 88%
+   hauteur), sans jamais deborder ni etre coupe. --design-w/--design-h
+   sont fournis en ligne par DeviceShell.tsx pour chaque console. */
+.device-shell__skin-scale {
+  --design-w: 300px;
+  --design-h: 480px;
+  width: var(--design-w);
+  height: var(--design-h);
+  transform: scale(min(calc(94vw / var(--design-w)), calc(88dvh / var(--design-h))));
 }
 
 /* Fallback uniquement quand aucun skin de console n'est actif (etat "off"
