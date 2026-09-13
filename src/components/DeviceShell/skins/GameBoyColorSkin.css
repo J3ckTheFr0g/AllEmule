@@ -11,11 +11,13 @@
   width: 280px;
   max-width: 100%;
   aspect-ratio: 280 / 430;
-  background: linear-gradient(155deg, #8f4fd6 0%, #7a3cc4 45%, #6a2fb0 100%);
+  background:
+    linear-gradient(100deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 20%),
+    linear-gradient(155deg, #9d5ce0 0%, #7a3cc4 45%, #5c249e 100%);
   border-radius: 26px 26px 52px 26px;
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.35),
-    inset 0 -8px 12px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4),
+    inset 0 -8px 12px rgba(0, 0, 0, 0.25),
     0 10px 24px rgba(0, 0, 0, 0.35);
   padding: 20px 18px 26px;
   display: flex;
@@ -103,9 +105,9 @@
 .gbc-skin__dpad-v,
 .gbc-skin__dpad-h {
   position: absolute;
-  background: #1f1f26;
+  background: linear-gradient(160deg, #3a6fd6 0%, #1c3f8f 100%);
   border-radius: 4px;
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.15), 0 2px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3), 0 2px 3px rgba(0, 0, 0, 0.4);
 }
 
 .gbc-skin__dpad-v {
@@ -136,7 +138,6 @@
   border-radius: 50%;
   border: none;
   padding: 0;
-  background: radial-gradient(circle at 35% 30%, #ffd93d, #d6a600 70%);
   box-shadow:
     inset 0 -2px 3px rgba(0, 0, 0, 0.35),
     inset 0 2px 2px rgba(255, 255, 255, 0.3),
@@ -146,8 +147,13 @@
   touch-action: none;
 }
 
+.gbc-skin__btn--a {
+  background: radial-gradient(circle at 35% 30%, #e0503f, #a1281c 70%);
+}
+
 .gbc-skin__btn--b {
   align-self: flex-end;
+  background: radial-gradient(circle at 35% 30%, #4fc46a, #1f8a3f 70%);
 }
 
 .gbc-skin__meta {

@@ -4,16 +4,18 @@ import { DpadHitzones } from './DpadHitzones';
 import './SegaGameGearSkin.css';
 
 /**
- * Rendu haute-fidelite d'un handheld couleur horizontal a grand ecran,
- * dans l'esprit de la console portable Sega Game Gear (1990) : chassis
- * noir mat, liseret rouge sur le bord superieur, tres large ecran central
- * avec vitre/reflet, D-pad unifie a gauche, boutons d'action 1/2 empiles
- * en diagonale a droite, bouton Start sous l'ecran, grille de
- * haut-parleur, molette de volume et prise casque sur la tranche droite.
+ * Rendu haute-fidelite d'un handheld couleur horizontal, chassis noir
+ * glossy/chrome (inspire de coques modernes "retro-case" pour smartphone
+ * plutot que du boitier plastique mat d'origine 1990) : bezel chrome
+ * autour d'un tres large ecran central, deux molettes rondes en haut a
+ * droite (cablees en boutons d'epaule L/R), D-pad unifie en bas a gauche,
+ * boutons d'action 1/2 en bas a droite, petits boutons ronds
+ * Select/Start au centre, grille de haut-parleur, molette de volume et
+ * prise casque sur la tranche.
  *
  * Marque fictive "GEAR POCKET" (voir CONSOLE_DISPLAY_NAMES) : forme et
- * couleurs rendent hommage au boitier reel, mais aucun nom/logo depose
- * n'est reproduit.
+ * couleurs rendent hommage au style de boitier, mais aucun nom/logo
+ * depose n'est reproduit.
  *
  * data-rive-slot="game_gear.riv" : ce rendu CSS est un remplacant
  * temporaire en attendant un vrai asset Rive.
@@ -25,7 +27,18 @@ export function SegaGameGearSkin({ screenContent }: SkinProps) {
         <div className="gg-skin__case">
           <div className="gg-skin__case-sheen" />
           <div className="gg-skin__top-stripe" />
-          <div className="gg-skin__cartridge-seam" />
+
+          <div className="gg-skin__top-row">
+            <span className="gg-skin__brand-name">GEAR POCKET</span>
+            <div className="gg-skin__dials">
+              <button className="gg-skin__dial" aria-label="Epaule gauche" {...bindEmulatorButton('l')}>
+                <span className="gg-skin__dial-notch" />
+              </button>
+              <button className="gg-skin__dial" aria-label="Epaule droite" {...bindEmulatorButton('r')}>
+                <span className="gg-skin__dial-notch" />
+              </button>
+            </div>
+          </div>
 
           <div className="gg-skin__screen-bezel">
             <div className="gg-skin__screen-glass">
@@ -43,18 +56,14 @@ export function SegaGameGearSkin({ screenContent }: SkinProps) {
             </div>
 
             <div className="gg-skin__mid">
-              <div className="gg-skin__brandplate">
-                <span className="gg-skin__brand-name">GEAR POCKET</span>
-                <span className="gg-skin__brand-tagline">PORTABLE COLOR PLAYER</span>
-              </div>
-              <button className="gg-skin__start" aria-label="Start" {...bindEmulatorButton('start')}>
+              <button className="gg-skin__pill" aria-label="Select" {...bindEmulatorButton('select')}>
+                <span className="gg-skin__pill-dot" />
+                SELECT
+              </button>
+              <button className="gg-skin__pill" aria-label="Start" {...bindEmulatorButton('start')}>
+                <span className="gg-skin__pill-dot" />
                 START
               </button>
-              <div className="gg-skin__speaker" aria-hidden="true">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <span key={i} className="gg-skin__speaker-hole" />
-                ))}
-              </div>
             </div>
 
             <div className="gg-skin__ab">
@@ -64,6 +73,15 @@ export function SegaGameGearSkin({ screenContent }: SkinProps) {
               <button className="gg-skin__btn gg-skin__btn--1" aria-label="Bouton 1" {...bindEmulatorButton('a')}>
                 <span>1</span>
               </button>
+            </div>
+          </div>
+
+          <div className="gg-skin__bottom-row">
+            <span className="gg-skin__tagline">GEAR POCKET</span>
+            <div className="gg-skin__speaker" aria-hidden="true">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <span key={i} className="gg-skin__speaker-hole" />
+              ))}
             </div>
           </div>
 
