@@ -50,12 +50,28 @@ export class DeviceStateMachine {
     this.listeners.forEach((l) => l(next));
   }
 
-  loadRom(bytes: Uint8Array, fileName: string): void {
+  /**
+   * @param forcedConsole Quand l'utilisateur a choisi explicitement une
+   * console dans le stand d'accueil (voir ConsoleStand), on saute la
+   * detection automatique par header/extension et on fait confiance a ce
+   * choix. Utile pour les cas structurellement ambigus (GBA vs GBA SP,
+   * indiscernables par le contenu de la ROM) ou pour les consoles qui
+   * n'ont qu'un fallback par extension peu fiable (Game Gear, PC Engine,
+   * NGP) : le detecteur automatique reste utilise seulement si aucune
+   * console n'est precisee.
+   */
+  loadRom(bytes: Uint8Array, fileName: string, forcedConsole?: ConsoleType): void {
     if (this.state !== 'off') {
       throw new Error(
         `Impossible de charger une ROM depuis l'etat "${this.state}". ` +
           `Eteignez la console en cours d'abord.`,
       );
+    }
+
+    if (forcedConsole) {
+      this.pendingConsole = forcedConsole;
+      this.setState('romInserting');
+      return;
     }
 
     const result = this.detector.detect(bytes, fileName);

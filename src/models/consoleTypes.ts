@@ -164,6 +164,25 @@ export const CONSOLE_DISPLAY_NAMES: Record<ConsoleType, string> = {
   [ConsoleType.Unknown]: 'Console inconnue',
 };
 
+/**
+ * Extensions de fichier associees a chaque console jouable, utilisees pour
+ * filtrer le selecteur de fichiers quand l'utilisateur choisit une console
+ * dans le stand d'accueil (voir ConsoleStand). GBA et GBA SP partagent la
+ * meme extension (.gba) - impossible a distinguer par le contenu de la
+ * ROM (meme puce), d'ou l'interet de laisser l'utilisateur choisir
+ * explicitement plutot que de se fier a la seule detection automatique.
+ */
+export const CONSOLE_FILE_EXTENSIONS: Partial<Record<ConsoleType, string[]>> = {
+  [ConsoleType.GameBoy]: ['.gb'],
+  [ConsoleType.GameBoyColor]: ['.gbc'],
+  [ConsoleType.GameBoyAdvance]: ['.gba'],
+  [ConsoleType.GameBoyAdvanceSp]: ['.gba'],
+  [ConsoleType.AtariLynx]: ['.lnx'],
+  [ConsoleType.SegaGameGear]: ['.gg'],
+  [ConsoleType.PcEngineGt]: ['.pce'],
+  [ConsoleType.NeoGeoPocket]: ['.ngp', '.ngc'],
+};
+
 export interface GameAndWatchSkin {
   gameId: string;
   riveAsset: string;

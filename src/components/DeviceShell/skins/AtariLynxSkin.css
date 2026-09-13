@@ -142,6 +142,8 @@
   font: 700 12px/1 Arial, sans-serif;
   color: #eee;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
   background: radial-gradient(circle at 35% 30%, #7d1f18, var(--lynx-red) 60%, #7a241c);
   box-shadow:
     0 3px 5px rgba(0, 0, 0, 0.5),

@@ -1,4 +1,6 @@
 import type { SkinProps } from './SkinProps';
+import { bindEmulatorButton } from '../../../utils/emulatorInput';
+import { DpadHitzones } from './DpadHitzones';
 import './SegaGameGearSkin.css';
 
 /**
@@ -37,6 +39,7 @@ export function SegaGameGearSkin({ screenContent }: SkinProps) {
             <div className="gg-skin__dpad">
               <div className="gg-skin__dpad-cross" />
               <div className="gg-skin__dpad-center" />
+              <DpadHitzones />
             </div>
 
             <div className="gg-skin__mid">
@@ -44,7 +47,7 @@ export function SegaGameGearSkin({ screenContent }: SkinProps) {
                 <span className="gg-skin__brand-name">GEAR POCKET</span>
                 <span className="gg-skin__brand-tagline">PORTABLE COLOR PLAYER</span>
               </div>
-              <button className="gg-skin__start" aria-label="Start">
+              <button className="gg-skin__start" aria-label="Start" {...bindEmulatorButton('start')}>
                 START
               </button>
               <div className="gg-skin__speaker" aria-hidden="true">
@@ -55,10 +58,10 @@ export function SegaGameGearSkin({ screenContent }: SkinProps) {
             </div>
 
             <div className="gg-skin__ab">
-              <button className="gg-skin__btn gg-skin__btn--2" aria-label="Bouton 2">
+              <button className="gg-skin__btn gg-skin__btn--2" aria-label="Bouton 2" {...bindEmulatorButton('b')}>
                 <span>2</span>
               </button>
-              <button className="gg-skin__btn gg-skin__btn--1" aria-label="Bouton 1">
+              <button className="gg-skin__btn gg-skin__btn--1" aria-label="Bouton 1" {...bindEmulatorButton('a')}>
                 <span>1</span>
               </button>
             </div>
