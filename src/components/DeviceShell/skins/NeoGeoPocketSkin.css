@@ -17,12 +17,14 @@
   width: min(88vw, 400px);
   padding: 16px 20px 18px;
   border-radius: 12px;
-  background: linear-gradient(155deg, #3a3b3e 0%, #232426 55%, #17181a 100%);
+  background:
+    linear-gradient(100deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 20%),
+    linear-gradient(155deg, #f4f4f2 0%, #dedfdc 45%, #c5c6c3 100%);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.08) inset,
-    0 -8px 14px rgba(0, 0, 0, 0.4) inset,
-    0 12px 26px rgba(0, 0, 0, 0.45);
-  border: 1px solid #101112;
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 -8px 14px rgba(0, 0, 0, 0.1) inset,
+    0 12px 26px rgba(0, 0, 0, 0.35);
+  border: 1px solid #b6b7b4;
 }
 
 .ngp-headerRow {
@@ -36,14 +38,14 @@
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: #e7e7e7;
+  color: #3a3b3e;
 }
 
 .ngp-brandPocket {
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.12em;
-  color: #8fd3ff;
+  color: #2f7fc4;
 }
 
 .ngp-screenBezel {
