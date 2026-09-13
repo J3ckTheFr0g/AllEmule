@@ -5,10 +5,9 @@ import './ConsoleStand.css';
 /**
  * Position/taille de la zone cliquable de chaque console, en pourcentage
  * de l'image src/assets/shelf-photo.jpg (photo fournie par l'utilisateur,
- * recadree pour ne garder que l'etagere en bois - toute affiche/logo de
- * groupe identifiable a ete exclue du cadrage). Valeurs estimees a l'oeil
- * sur la photo ; a affiner si le calage visuel ne correspond pas assez
- * precisement une fois teste en vrai.
+ * etagere en bois sans affiche/logo/pochette identifiable en fond).
+ * Valeurs estimees a l'oeil sur la photo ; a affiner si le calage visuel
+ * ne correspond pas assez precisement une fois teste en vrai.
  */
 interface Hotspot {
   type: ConsoleType;
@@ -20,16 +19,16 @@ interface Hotspot {
 
 const HOTSPOTS: Hotspot[] = [
   // Etagere du haut.
-  { type: ConsoleType.SegaGameGear, left: 0, top: 0, width: 33, height: 18 },
-  { type: ConsoleType.PcEngineGt, left: 33, top: 0, width: 30, height: 18 },
-  { type: ConsoleType.NeoGeoPocket, left: 63, top: 0, width: 37, height: 18 },
+  { type: ConsoleType.SegaGameGear, left: 4, top: 8, width: 40, height: 21 },
+  { type: ConsoleType.PcEngineGt, left: 45, top: 5, width: 20, height: 24 },
+  { type: ConsoleType.NeoGeoPocket, left: 66, top: 12, width: 28, height: 16 },
   // Etagere du milieu.
-  { type: ConsoleType.GameBoy, left: 18, top: 30, width: 30, height: 30 },
-  { type: ConsoleType.GameBoyColor, left: 52, top: 30, width: 30, height: 30 },
+  { type: ConsoleType.GameBoy, left: 24, top: 40, width: 19, height: 24 },
+  { type: ConsoleType.GameBoyColor, left: 58, top: 41, width: 16, height: 22 },
   // Etagere du bas.
-  { type: ConsoleType.GameBoyAdvance, left: 0, top: 74, width: 36, height: 26 },
-  { type: ConsoleType.GameBoyAdvanceSp, left: 36, top: 76, width: 22, height: 22 },
-  { type: ConsoleType.AtariLynx, left: 58, top: 73, width: 42, height: 27 },
+  { type: ConsoleType.GameBoyAdvance, left: 6, top: 82, width: 31, height: 16 },
+  { type: ConsoleType.GameBoyAdvanceSp, left: 39, top: 80, width: 18, height: 18 },
+  { type: ConsoleType.AtariLynx, left: 58, top: 79, width: 36, height: 20 },
 ];
 
 export interface ConsoleStandProps {
