@@ -20,7 +20,7 @@ export function GameBoyColorSkin({ screenContent }: SkinProps) {
         </div>
 
         <div className="gbc-skin__logo">
-          GAME BOY <span className="gbc-skin__logo-color">COLOR</span>
+          DOT BOY <span className="gbc-skin__logo-color">COLOR</span>
         </div>
 
         <div className="gbc-skin__controls">

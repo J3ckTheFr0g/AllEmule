@@ -34,7 +34,7 @@ export function GameBoyAdvanceSkin({ screenContent }: SkinProps) {
         </div>
 
         <div className="gba-skin__bottom-row">
-          <div className="gba-skin__logo">GAME BOY ADVANCE</div>
+          <div className="gba-skin__logo">DOT BOY ADVANCE</div>
           <div className="gba-skin__start-select">
             <span className="gba-skin__pill" />
             <span className="gba-skin__pill" />

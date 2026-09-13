@@ -2,14 +2,17 @@ import type { SkinProps } from './SkinProps';
 import './GameBoySkin.css';
 
 /**
- * Rendu haute-fidelite du Game Boy original (DMG-01, Nintendo 1989) :
- * boitier ivoire/gris chaud, lunette d'ecran gris-violet fonce avec vitre
- * et reflet, D-pad en croix unique (pas deux barres qui se croisent),
- * boutons A/B ovales bordeaux inclines a -25deg (comme le boitier reel),
- * pilules SELECT/START, grille de haut-parleur en points, plaque de
- * marque "Nintendo GAME BOY", mention "DOT MATRIX WITH STEREO SOUND",
- * et une ombre de contact au sol pour donner une sensation de volume/
- * tenue en main plutot qu'un pictogramme plat.
+ * Rendu haute-fidelite d'un handheld monochrome vertical dans l'esprit du
+ * Game Boy original (1989) : boitier ivoire/gris chaud, lunette d'ecran
+ * gris-violet fonce avec vitre et reflet, D-pad en croix unique (pas deux
+ * barres qui se croisent), boutons A/B ovales bordeaux inclines a -25deg
+ * (comme le boitier reel), pilules SELECT/START, grille de haut-parleur
+ * en points, et une ombre de contact au sol pour donner une sensation de
+ * volume/tenue en main plutot qu'un pictogramme plat.
+ *
+ * Marque fictive "DOT BOY" (voir CONSOLE_DISPLAY_NAMES) : la forme, les
+ * proportions et les couleurs rendent hommage au boitier reel, mais aucun
+ * nom ni logo depose n'est reproduit.
  *
  * data-rive-slot="gameboy.riv" : ce rendu CSS est un remplacant temporaire.
  * Le jour ou l'asset Rive correspondant (voir CONSOLE_SPECS.riveAsset)
@@ -38,10 +41,9 @@ export function GameBoySkin({ screenContent }: SkinProps) {
           </div>
 
           <div className="gb-skin__brandplate">
-            <span className="gb-skin__brand-nintendo">Nintendo</span>
-            <span className="gb-skin__brand-gameboy">GAME BOY</span>
+            <span className="gb-skin__brand-gameboy">DOT BOY</span>
           </div>
-          <div className="gb-skin__dotmatrix-label">DOT MATRIX WITH STEREO SOUND</div>
+          <div className="gb-skin__dotmatrix-label">DOT MATRIX POCKET SYSTEM</div>
 
           <div className="gb-skin__controls">
             <div className="gb-skin__dpad">

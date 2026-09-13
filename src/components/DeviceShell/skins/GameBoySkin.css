@@ -158,15 +158,6 @@
   line-height: 1.05;
 }
 
-.gb-skin__brand-nintendo {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 11px;
-  color: #3d4066;
-  letter-spacing: 0.02em;
-}
-
 .gb-skin__brand-gameboy {
   font-family: 'Arial Black', Arial, sans-serif;
   font-style: italic;
@@ -185,11 +176,10 @@
 }
 
 .gb-skin__controls {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 12px;
+  margin-top: 16px;
   padding: 0 6px;
 }
 
@@ -263,7 +253,7 @@
 }
 
 .gb-skin__meta {
-  margin-top: 20px;
+  margin-top: 10px;
   display: flex;
   justify-content: center;
   gap: 20px;

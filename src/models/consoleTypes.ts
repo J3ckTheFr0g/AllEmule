@@ -136,17 +136,29 @@ export const CONSOLE_SPECS: Record<ConsoleType, ConsoleSpec> = {
   },
 };
 
-/** Nom lisible par humain, pour l'UI (prompts, message "non jouable", etc.). */
+/**
+ * Nom affiche a l'utilisateur (prompts, message "non jouable", etc.).
+ *
+ * Pour les consoles qui ont un skin dessine (supportStatus 'mvp'), c'est
+ * la marque FICTIVE utilisee sur la plaque du boitier (ex: "Dot Boy" pour
+ * le Game Boy) - coherence entre le texte de l'UI et le logo dessine dans
+ * le skin, sans reproduire de nom/logo depose reel.
+ *
+ * Pour les consoles non supportees (excluded/phase2), c'est le vrai nom :
+ * aucun skin/logo n'est dessine pour elles, ce n'est qu'une reference
+ * textuelle informative a la console reelle (usage descriptif standard,
+ * pas une marque appliquee a notre propre produit).
+ */
 export const CONSOLE_DISPLAY_NAMES: Record<ConsoleType, string> = {
-  [ConsoleType.GameBoy]: 'Game Boy',
-  [ConsoleType.GameBoyColor]: 'Game Boy Color',
-  [ConsoleType.GameBoyAdvance]: 'Game Boy Advance',
-  [ConsoleType.GameBoyAdvanceSp]: 'Game Boy Advance SP',
-  [ConsoleType.AtariLynx]: 'Atari Lynx',
-  [ConsoleType.SegaGameGear]: 'Sega Game Gear',
-  [ConsoleType.PcEngineGt]: 'PC Engine GT',
+  [ConsoleType.GameBoy]: 'Dot Boy',
+  [ConsoleType.GameBoyColor]: 'Dot Boy Color',
+  [ConsoleType.GameBoyAdvance]: 'Dot Boy Advance',
+  [ConsoleType.GameBoyAdvanceSp]: 'Dot Boy Advance SP',
+  [ConsoleType.AtariLynx]: 'Wildcat',
+  [ConsoleType.SegaGameGear]: 'Gear Pocket',
+  [ConsoleType.PcEngineGt]: 'Core Engine GT',
   [ConsoleType.WataraSupervision]: 'Watara Supervision',
-  [ConsoleType.NeoGeoPocket]: 'Neo Geo Pocket',
+  [ConsoleType.NeoGeoPocket]: 'Arc Pocket',
   [ConsoleType.Gp32]: 'GP32',
   [ConsoleType.GameAndWatch]: 'Game & Watch',
   [ConsoleType.Unknown]: 'Console inconnue',
