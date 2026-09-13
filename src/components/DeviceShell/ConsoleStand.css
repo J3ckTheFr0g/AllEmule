@@ -137,9 +137,14 @@
   width: var(--design-w);
   height: var(--design-h);
   transform: translate(-50%, -50%)
-    scale(min(calc(70px / var(--design-w)), calc(70px / var(--design-h))));
+    scale(min(calc(76px / var(--design-w)), calc(76px / var(--design-h))));
   transform-origin: center;
   pointer-events: none;
+  /* A cette echelle miniature, les details fins (croix, petits boutons)
+     de certains boitiers a faible contraste (gris sur gris, noir sur
+     noir) deviennent illisibles. Un leger boost de contraste/saturation
+     aide a les distinguer sans changer le rendu plein ecran. */
+  filter: contrast(1.25) saturate(1.3);
 }
 
 .console-stand__idle-screen {
