@@ -329,12 +329,6 @@ export function DeviceShell() {
       {state === 'playing' && !isUnsupported && (
         <div className="device-shell__playing">
           <div ref={emulatorContainerRef} className="device-shell__emulator" />
-          <button
-            className="device-shell__power-off"
-            onClick={() => machine.pressPowerOff()}
-          >
-            Eteindre
-          </button>
         </div>
       )}
 
@@ -382,6 +376,16 @@ export function DeviceShell() {
             skinElement
           ) : (
             innerContent
+          )}
+
+          {state === 'playing' && !isUnsupported && (
+            <button
+              className="device-shell__power-switch"
+              aria-label="Eteindre"
+              onClick={() => machine.pressPowerOff()}
+            >
+              <span className="device-shell__power-switch-knob" />
+            </button>
           )}
         </div>
       )}

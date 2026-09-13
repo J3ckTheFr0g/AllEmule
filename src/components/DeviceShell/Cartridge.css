@@ -8,6 +8,7 @@
 }
 
 .cartridge__body {
+  position: relative;
   width: 62%;
   aspect-ratio: 5 / 6;
   background: linear-gradient(160deg, #9a9a9a 0%, #6b6b6b 55%, #4a4a4a 100%);
@@ -35,6 +36,94 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/* Encoche coin (Game Boy/Color et Neo Geo Pocket) : coupe un coin de la
+   cartouche, detail caracteristique de leur silhouette reelle. */
+.cartridge__notch {
+  display: none;
+}
+
+.cartridge__body[data-shape='gb'] .cartridge__notch,
+.cartridge__body[data-shape='ngp'] .cartridge__notch {
+  display: block;
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 22%;
+  height: 14%;
+  background: #1a1a1a;
+  border-radius: 0 4px 0 6px;
+}
+
+.cartridge__body[data-shape='ngp'] .cartridge__notch {
+  right: auto;
+  left: -1px;
+  border-radius: 4px 0 6px 0;
+}
+
+/* GBA / GBA SP : cartouche fine, sombre, plus large que haute. */
+.cartridge__body[data-shape='gba'] {
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(160deg, #3a3a3d 0%, #1c1c1e 55%, #0d0d0e 100%);
+  padding: 9% 7% 16%;
+}
+
+/* Atari Lynx : carte large et plate, contacts sur la tranche laterale
+   plutot qu'en bas. */
+.cartridge__body[data-shape='lynx'] {
+  aspect-ratio: 3 / 2;
+  background: linear-gradient(160deg, #c7c9cc 0%, #9a9da2 55%, #6d6f73 100%);
+  padding: 8% 14% 8% 6%;
+}
+
+.cartridge__body[data-shape='lynx'] .cartridge__contacts {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  right: 4%;
+  left: auto;
+  width: 8%;
+  height: auto;
+  margin: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    #c9a227 0px,
+    #c9a227 2px,
+    #8a6d1a 2px,
+    #8a6d1a 4px
+  );
+  border-radius: 2px;
+}
+
+/* Sega Game Gear : cartouche portrait trapue, plastique sombre. */
+.cartridge__body[data-shape='gg'] {
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(160deg, #34363a 0%, #202226 55%, #0e0f11 100%);
+}
+
+/* PC Engine (HuCard) : carte tres fine et plate, quasi a plat, presque
+   pas de bordure visible autour de l'etiquette (contrairement a une
+   vraie cartouche en relief). */
+.cartridge__body[data-shape='pce'] {
+  aspect-ratio: 3 / 2;
+  background: linear-gradient(160deg, #e6e6e2 0%, #cfcfca 100%);
+  padding: 4%;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+    0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+.cartridge__body[data-shape='pce'] .cartridge__contacts {
+  display: none;
+}
+
+/* Neo Geo Pocket : petite cartouche compacte, quasi carree. */
+.cartridge__body[data-shape='ngp'] {
+  aspect-ratio: 1 / 1;
+  width: 46%;
+  background: linear-gradient(160deg, #4a4c50 0%, #2a2b2e 55%, #141517 100%);
 }
 
 .cartridge__label {
