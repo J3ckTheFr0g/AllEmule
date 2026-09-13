@@ -13,7 +13,11 @@ import {
 import { CONSOLE_SKINS, UnsupportedConsoleNotice } from './skins';
 import { ConsoleStand } from './ConsoleStand';
 import { Cartridge } from './Cartridge';
-import { SKIN_DESIGN_SIZE, SKIN_DESIGN_SIZE_PORTRAIT } from './skinDesignSizes';
+import {
+  SKIN_DESIGN_SIZE,
+  SKIN_DESIGN_SIZE_PORTRAIT,
+  SKIN_DESIGN_SIZE_LANDSCAPE,
+} from './skinDesignSizes';
 import './DeviceShell.css';
 
 const ANIM_DURATIONS_MS = {
@@ -339,6 +343,7 @@ export function DeviceShell() {
   const designSize =
     displayConsole && SCALE_WRAPPED_CONSOLES.has(displayConsole)
       ? (viewportOrientation === 'portrait' && SKIN_DESIGN_SIZE_PORTRAIT[displayConsole]) ||
+        (viewportOrientation === 'landscape' && SKIN_DESIGN_SIZE_LANDSCAPE[displayConsole]) ||
         SKIN_DESIGN_SIZE[displayConsole]
       : undefined;
   const skinElement = SkinComponent ? <SkinComponent screenContent={innerContent} /> : null;
