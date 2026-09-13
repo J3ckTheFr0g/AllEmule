@@ -80,6 +80,15 @@ body {
   width: var(--design-w);
   height: var(--design-h);
   transform: scale(min(calc(94vw / var(--design-w)), calc(88dvh / var(--design-h))));
+  /* Le canvas WebGL/2D d'EmulatorJS vit a l'interieur de cet ancetre
+     transforme. Sans promotion explicite en calque GPU, certains
+     navigateurs mobiles re-rasterisent le canvas en logiciel a chaque
+     frame au lieu de le composer, ce qui peut faire planter l'onglet
+     (memoire/CPU) au bout de quelques secondes de jeu (constate en test).
+     will-change+backface-visibility force la promotion en calque compose. */
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Fallback uniquement quand aucun skin de console n'est actif (etat "off"
