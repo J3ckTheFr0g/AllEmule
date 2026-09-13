@@ -10,6 +10,7 @@ import {
 } from '../../models/consoleTypes';
 import { CONSOLE_SKINS, UnsupportedConsoleNotice } from './skins';
 import { ConsoleStand } from './ConsoleStand';
+import { Cartridge } from './Cartridge';
 import './DeviceShell.css';
 
 const ANIM_DURATIONS_MS = {
@@ -22,6 +23,7 @@ const ANIM_DURATIONS_MS = {
 export function DeviceShell() {
   const { machine, state, currentConsole, pendingConsole } = useDeviceStateMachine();
   const [romBlobUrl, setRomBlobUrl] = useState<string | null>(null);
+  const [loadedFileName, setLoadedFileName] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const emulatorContainerRef = useRef<HTMLDivElement>(null);
@@ -30,13 +32,33 @@ export function DeviceShell() {
   // plutot que de se fier a la detection automatique (utile notamment pour
   // GBA vs GBA SP, indiscernables par le contenu de la ROM).
   const pendingStandSelectionRef = useRef<ConsoleType | null>(null);
+  // Console "attrapee sur l'etagere" : affichee des le clic sur la tuile,
+  // avant meme que l'utilisateur ait choisi un fichier dans le selecteur
+  // natif (qui reste hors de notre controle visuel). Donne la sensation
+  // de prendre la console en main plutot que de sauter directement a
+  // l'ecran de jeu une fois un fichier choisi.
+  const [standPickedConsole, setStandPickedConsole] = useState<ConsoleType | null>(null);
 
   const handleStandSelect = useCallback((type: ConsoleType) => {
     pendingStandSelectionRef.current = type;
+    setStandPickedConsole(type);
     const input = fileInputRef.current;
     if (!input) return;
     input.accept = (CONSOLE_FILE_EXTENSIONS[type] ?? []).join(',');
     input.click();
+
+    // Le selecteur de fichier natif ne notifie pas son annulation ; on
+    // detecte la fermeture du dialogue via le retour de focus sur la
+    // fenetre, et on revient a l'etagere si aucun fichier n'a ete choisi.
+    const handleWindowFocus = () => {
+      window.removeEventListener('focus', handleWindowFocus);
+      setTimeout(() => {
+        if (input.files && input.files.length === 0) {
+          setStandPickedConsole(null);
+        }
+      }, 300);
+    };
+    window.addEventListener('focus', handleWindowFocus);
   }, []);
 
   const handleFileSelected = useCallback(
@@ -52,6 +74,7 @@ export function DeviceShell() {
         const bytes = await readRomFile(file);
         machine.loadRom(bytes, file.name, forcedConsole);
         setRomBlobUrl(URL.createObjectURL(file));
+        setLoadedFileName(file.name);
       } catch (err) {
         if (err instanceof AmbiguousRomError) {
           setErrorMessage(
@@ -90,6 +113,8 @@ export function DeviceShell() {
       timer = setTimeout(() => {
         machine.onPowerOffAnimationComplete();
         setRomBlobUrl(null);
+        setLoadedFileName(null);
+        setStandPickedConsole(null);
       }, ANIM_DURATIONS_MS.powerOff);
     }
 
@@ -230,10 +255,13 @@ export function DeviceShell() {
 
   // Avant l'allumage (insertion/morph/attente), le boitier a afficher est
   // celui de la ROM en cours de chargement (pendingConsole), pas l'ancien
-  // currentConsole qui ne bascule qu'a pressPowerOn().
+  // currentConsole qui ne bascule qu'a pressPowerOn(). En etat "off" avec
+  // une console "attrapee sur l'etagere" (standPickedConsole), on affiche
+  // deja son skin le temps que l'utilisateur choisisse un fichier.
   const isPrePower =
     state === 'romInserting' || state === 'morphing' || state === 'awaitingPowerOn';
-  const displayConsole = isPrePower ? pendingConsole : currentConsole;
+  const displayConsole =
+    state === 'off' ? standPickedConsole : isPrePower ? pendingConsole : currentConsole;
   const displaySpec = displayConsole ? CONSOLE_SPECS[displayConsole] : null;
   const SkinComponent = displayConsole ? CONSOLE_SKINS[displayConsole] : undefined;
   const isUnsupported = state === 'playing' && !!displaySpec && displaySpec.supportStatus !== 'mvp';
@@ -250,8 +278,14 @@ export function DeviceShell() {
   // recouvrait tout l'ecran).
   const innerContent = (
     <div className="device-shell__screen-content">
-      {state === 'romInserting' && (
-        <div className="device-shell__cartridge-insert" />
+      {state === 'off' && standPickedConsole && (
+        <div className="device-shell__prompt">
+          <p>Choisis un fichier ROM...</p>
+        </div>
+      )}
+
+      {state === 'romInserting' && displayConsole && loadedFileName && (
+        <Cartridge consoleType={displayConsole} fileName={loadedFileName} />
       )}
 
       {state === 'morphing' && (
@@ -290,7 +324,7 @@ export function DeviceShell() {
     <div className={`device-shell ${orientationClass}`}>
       {errorMessage && <div className="device-shell__error">{errorMessage}</div>}
 
-      {state === 'off' ? (
+      {state === 'off' && !standPickedConsole ? (
         <ConsoleStand onSelect={handleStandSelect} />
       ) : (
         <div

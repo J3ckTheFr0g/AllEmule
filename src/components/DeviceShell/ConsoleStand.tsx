@@ -1,5 +1,5 @@
-import type { CSSProperties } from 'react';
-import { CONSOLE_SPECS, CONSOLE_DISPLAY_NAMES, ConsoleType } from '../../models/consoleTypes';
+import { CONSOLE_DISPLAY_NAMES, ConsoleType } from '../../models/consoleTypes';
+import { CONSOLE_SKINS } from './skins';
 import './ConsoleStand.css';
 
 /** Consoles jouables affichees dans le stand, dans un ordre de sortie approximatif. */
@@ -14,51 +14,57 @@ const STAND_CONSOLES: ConsoleType[] = [
   ConsoleType.GameBoyAdvanceSp,
 ];
 
-/** Couleur d'accent par tuile, reprenant l'identite visuelle du skin de chaque console. */
-const STAND_ACCENTS: Partial<Record<ConsoleType, string>> = {
-  [ConsoleType.GameBoy]: '#8b9968',
-  [ConsoleType.GameBoyColor]: '#ffd93d',
-  [ConsoleType.AtariLynx]: '#c81f2e',
-  [ConsoleType.SegaGameGear]: '#c81f2e',
-  [ConsoleType.NeoGeoPocket]: '#9a9ba0',
-  [ConsoleType.PcEngineGt]: '#d8283b',
-  [ConsoleType.GameBoyAdvance]: '#7a2350',
-  [ConsoleType.GameBoyAdvanceSp]: '#453a9e',
-};
-
 export interface ConsoleStandProps {
   onSelect: (console: ConsoleType) => void;
 }
 
+/** Ecran d'un boitier au repos sur l'etagere (pas de jeu, pas d'interaction). */
+function IdleScreen() {
+  return <div className="console-stand__idle-screen" />;
+}
+
 /**
- * Ecran d'accueil : une "etagere" moderne des consoles jouables plutot
- * qu'un simple bouton "Charger une ROM". Chaque tuile reprend
- * l'orientation/couleur caracteristique de la console (silhouette
- * simplifiee, pas le skin complet - trop lourd a rendre x8 en meme temps)
- * et son nom fictif (voir CONSOLE_DISPLAY_NAMES). Cliquer une tuile
+ * Ecran d'accueil : une "etagere" avec le vrai skin de chaque console
+ * jouable (rendu en miniature via CSS transform), plutot qu'un simple
+ * bouton "Charger une ROM" ou des icones plates. Cliquer une console
  * declenche onSelect, qui ouvre un selecteur de fichier filtre sur les
  * extensions de cette console et force ce type au chargement (bypasse la
  * detection automatique, utile notamment pour distinguer GBA/GBA SP).
+ *
+ * La racine de chaque tuile est un <div role="button"> (pas un <button>) :
+ * les skins rendent eux-memes de vrais <button> internes (D-pad, A/B...)
+ * pour l'ecran de jeu, et le HTML interdit d'imbriquer des elements
+ * interactifs. `pointer-events: none` sur le mini-skin fait remonter le
+ * clic au wrapper de la tuile plutot que d'activer ses boutons internes
+ * (inertes ici de toute facon, il n'y a pas de jeu en cours).
  */
 export function ConsoleStand({ onSelect }: ConsoleStandProps) {
   return (
     <div className="console-stand">
       <p className="console-stand__title">Choisis une console</p>
-      <div className="console-stand__grid">
+      <div className="console-stand__shelf">
         {STAND_CONSOLES.map((type) => {
-          const spec = CONSOLE_SPECS[type];
+          const Skin = CONSOLE_SKINS[type];
           return (
-            <button
+            <div
               key={type}
+              role="button"
+              tabIndex={0}
               className="console-stand__tile"
-              style={{ '--accent': STAND_ACCENTS[type] } as CSSProperties}
               onClick={() => onSelect(type)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') onSelect(type);
+              }}
             >
-              <span
-                className={`console-stand__icon console-stand__icon--${spec.orientation}`}
-              />
+              <div className="console-stand__preview">
+                {Skin && (
+                  <div className="console-stand__preview-skin">
+                    <Skin screenContent={<IdleScreen />} />
+                  </div>
+                )}
+              </div>
               <span className="console-stand__label">{CONSOLE_DISPLAY_NAMES[type]}</span>
-            </button>
+            </div>
           );
         })}
       </div>
