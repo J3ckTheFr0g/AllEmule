@@ -1,109 +1,69 @@
 import { CONSOLE_DISPLAY_NAMES, ConsoleType } from '../../models/consoleTypes';
-import { CONSOLE_SKINS } from './skins';
-import { SHELF_ICON_OVERRIDES } from './shelfIcons';
+import shelfPhoto from '../../assets/shelf-photo.jpg';
 import './ConsoleStand.css';
 
-interface ShelfEntry {
+/**
+ * Position/taille de la zone cliquable de chaque console, en pourcentage
+ * de l'image src/assets/shelf-photo.jpg (photo fournie par l'utilisateur,
+ * recadree pour ne garder que l'etagere en bois - toute affiche/logo de
+ * groupe identifiable a ete exclue du cadrage). Valeurs estimees a l'oeil
+ * sur la photo ; a affiner si le calage visuel ne correspond pas assez
+ * precisement une fois teste en vrai.
+ */
+interface Hotspot {
   type: ConsoleType;
-  /** true = boitier paysage, incline en arriere comme pose contre le mur (cf reference). */
-  tilt: boolean;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
 }
 
-/**
- * Regroupement par etagere, dans l'esprit de la reference utilisateur
- * (3 etageres en bois superposees) : rangee du haut = petits boitiers
- * paysage/exotiques, rangee du milieu = duo Game Boy/Color portrait,
- * rangee du bas = Advance/SP/Lynx.
- */
-const SHELF_ROWS: ShelfEntry[][] = [
-  [
-    { type: ConsoleType.SegaGameGear, tilt: true },
-    { type: ConsoleType.NeoGeoPocket, tilt: false },
-    { type: ConsoleType.PcEngineGt, tilt: false },
-  ],
-  [
-    { type: ConsoleType.GameBoy, tilt: false },
-    { type: ConsoleType.GameBoyColor, tilt: false },
-  ],
-  [
-    { type: ConsoleType.GameBoyAdvance, tilt: true },
-    { type: ConsoleType.GameBoyAdvanceSp, tilt: true },
-    { type: ConsoleType.AtariLynx, tilt: true },
-  ],
+const HOTSPOTS: Hotspot[] = [
+  // Etagere du haut.
+  { type: ConsoleType.SegaGameGear, left: 0, top: 0, width: 33, height: 18 },
+  { type: ConsoleType.PcEngineGt, left: 33, top: 0, width: 30, height: 18 },
+  { type: ConsoleType.NeoGeoPocket, left: 63, top: 0, width: 37, height: 18 },
+  // Etagere du milieu.
+  { type: ConsoleType.GameBoy, left: 18, top: 30, width: 30, height: 30 },
+  { type: ConsoleType.GameBoyColor, left: 52, top: 30, width: 30, height: 30 },
+  // Etagere du bas.
+  { type: ConsoleType.GameBoyAdvance, left: 0, top: 74, width: 36, height: 26 },
+  { type: ConsoleType.GameBoyAdvanceSp, left: 36, top: 76, width: 22, height: 22 },
+  { type: ConsoleType.AtariLynx, left: 58, top: 73, width: 42, height: 27 },
 ];
 
 export interface ConsoleStandProps {
   onSelect: (console: ConsoleType) => void;
 }
 
-function IdleScreen() {
-  return <div className="console-stand__idle-screen" />;
-}
-
 /**
- * Ecran d'accueil : etagere en bois a 3 niveaux fixee sur un mur
- * d'ambiance chambre d'ado fin-90s (guirlande lumineuse, silhouettes
- * d'affiches abstraites - pas de vraies pochettes/logos de groupes, voir
- * commentaire dans ConsoleStand.css), avec chaque console dans ses vraies
- * proportions (pas ecrasee en carre) et une legere inclinaison pour les
- * boitiers paysage, comme posee debout contre le mur.
- *
- * Chaque console utilise son icone d'etagere dediee (SHELF_ICON_OVERRIDES,
- * voir shelfIcons/) ; a defaut, retombe sur une version reduite de son
- * skin de jeu (CONSOLE_SKINS) - ne devrait plus arriver, les 8 consoles
- * jouables ont toutes une icone dediee.
+ * Ecran d'accueil : la photo fournie par l'utilisateur (etagere en bois,
+ * fond recadre pour exclure toute affiche/pochette/logo identifiable),
+ * avec une zone cliquable transparente positionnee sur chaque console
+ * visible dans la photo (voir HOTSPOTS). Remplace l'etagere entierement
+ * dessinee en CSS, jugee trop eloignee du rendu voulu par l'utilisateur.
  */
 export function ConsoleStand({ onSelect }: ConsoleStandProps) {
   return (
     <div className="console-stand">
-      <div className="console-stand__wall">
-        <div className="console-stand__lights" aria-hidden="true">
-          {Array.from({ length: 14 }).map((_, i) => (
-            <span key={i} />
-          ))}
-        </div>
-        <div className="console-stand__posters" aria-hidden="true">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <span key={i} className={`console-stand__poster console-stand__poster--${i}`} />
-          ))}
-        </div>
-      </div>
-
       <p className="console-stand__title">Choisis une console</p>
 
-      <div className="console-stand__bookcase">
-        {SHELF_ROWS.map((row, rowIndex) => (
-          <div className="console-stand__row" key={rowIndex}>
-            <div className="console-stand__items">
-              {row.map(({ type, tilt }) => {
-                const ShelfIcon = SHELF_ICON_OVERRIDES[type];
-                const Skin = CONSOLE_SKINS[type];
-                return (
-                  <div
-                    key={type}
-                    role="button"
-                    tabIndex={0}
-                    className="console-stand__item"
-                    onClick={() => onSelect(type)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') onSelect(type);
-                    }}
-                  >
-                    <div className={`console-stand__figure ${tilt ? 'console-stand__figure--tilt' : ''}`}>
-                      {ShelfIcon ? (
-                        <ShelfIcon />
-                      ) : (
-                        Skin && <Skin screenContent={<IdleScreen />} />
-                      )}
-                    </div>
-                    <div className="console-stand__shadow" />
-                    <span className="console-stand__label">{CONSOLE_DISPLAY_NAMES[type]}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="console-stand__plank" />
-          </div>
+      <div className="console-stand__photo-frame">
+        <img src={shelfPhoto} alt="Etagere de consoles" className="console-stand__photo" />
+
+        {HOTSPOTS.map(({ type, left, top, width, height }) => (
+          <button
+            key={type}
+            className="console-stand__hotspot"
+            style={{
+              left: `${left}%`,
+              top: `${top}%`,
+              width: `${width}%`,
+              height: `${height}%`,
+            }}
+            aria-label={CONSOLE_DISPLAY_NAMES[type]}
+            onClick={() => onSelect(type)}
+          />
         ))}
       </div>
     </div>
