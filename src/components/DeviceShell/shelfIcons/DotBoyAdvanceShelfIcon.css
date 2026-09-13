@@ -1,0 +1,99 @@
+.dotBoyAdvShelf-case {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 480 / 260;
+  border-radius: 12px 12px 18px 18px;
+  background:
+    linear-gradient(100deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 16%),
+    linear-gradient(155deg, #7a6ede 0%, #5f52c9 45%, #443a9e 100%);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.35),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 8% 10%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4%;
+}
+
+.dotBoyAdvShelf-shoulder {
+  position: absolute;
+  top: -3%;
+  width: 26%;
+  height: 10%;
+  background: #453a9e;
+  border-radius: 5px 5px 0 0;
+}
+
+.dotBoyAdvShelf-shoulder--l {
+  left: 6%;
+}
+
+.dotBoyAdvShelf-shoulder--r {
+  right: 6%;
+}
+
+.dotBoyAdvShelf-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4%;
+}
+
+.dotBoyAdvShelf-dpad {
+  position: relative;
+  width: 20%;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+
+.dotBoyAdvShelf-dpadCross {
+  position: absolute;
+  inset: 0;
+  background: #1f1f26;
+  clip-path: polygon(36% 0%, 64% 0%, 64% 36%, 100% 36%, 100% 64%, 64% 64%, 64% 100%, 36% 100%, 36% 64%, 0% 64%, 0% 36%, 36% 36%);
+}
+
+.dotBoyAdvShelf-screenBezel {
+  flex: 1;
+  aspect-ratio: 3 / 2;
+  border-radius: 6px;
+  background: #2e2b52;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.5);
+  padding: 10%;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.dotBoyAdvShelf-screen {
+  flex: 1;
+  background: #8a9a7a;
+  border-radius: 2px;
+}
+
+.dotBoyAdvShelf-ab {
+  display: flex;
+  flex-direction: column;
+  gap: 6%;
+  flex-shrink: 0;
+}
+
+.dotBoyAdvShelf-btn {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e0508a, #a12060 70%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.dotBoyAdvShelf-logo {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 6px;
+  color: #e4e1ff;
+}
