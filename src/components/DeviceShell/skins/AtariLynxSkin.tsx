@@ -1,4 +1,6 @@
 import type { SkinProps } from './SkinProps';
+import { bindEmulatorButton } from '../../../utils/emulatorInput';
+import { DpadHitzones } from './DpadHitzones';
 import './AtariLynxSkin.css';
 
 /**
@@ -38,25 +40,26 @@ export function AtariLynxSkin({ screenContent }: SkinProps) {
           <div className="lynx-skin__dpad">
             <div className="lynx-skin__dpad-v" />
             <div className="lynx-skin__dpad-h" />
+            <DpadHitzones />
           </div>
 
           <div className="lynx-skin__buttons">
             <div className="lynx-skin__ab">
-              <button className="lynx-skin__btn lynx-skin__btn--b" aria-label="Bouton B">
+              <button className="lynx-skin__btn lynx-skin__btn--b" aria-label="Bouton B" {...bindEmulatorButton('b')}>
                 B
               </button>
-              <button className="lynx-skin__btn lynx-skin__btn--a" aria-label="Bouton A">
+              <button className="lynx-skin__btn lynx-skin__btn--a" aria-label="Bouton A" {...bindEmulatorButton('a')}>
                 A
               </button>
             </div>
             <div className="lynx-skin__options">
-              <button className="lynx-skin__btn lynx-skin__btn--small" aria-label="Option 1">
+              <button className="lynx-skin__btn lynx-skin__btn--small" aria-label="Option 1" {...bindEmulatorButton('l')}>
                 OPT 1
               </button>
-              <button className="lynx-skin__btn lynx-skin__btn--small" aria-label="Pause">
+              <button className="lynx-skin__btn lynx-skin__btn--small" aria-label="Pause" {...bindEmulatorButton('start')}>
                 PAUSE
               </button>
-              <button className="lynx-skin__btn lynx-skin__btn--small" aria-label="Option 2">
+              <button className="lynx-skin__btn lynx-skin__btn--small" aria-label="Option 2" {...bindEmulatorButton('r')}>
                 OPT 2
               </button>
             </div>

@@ -1,4 +1,6 @@
 import type { SkinProps } from './SkinProps';
+import { bindEmulatorButton } from '../../../utils/emulatorInput';
+import { DpadHitzones } from './DpadHitzones';
 import './GameBoyAdvanceSpSkin.css';
 
 /**
@@ -27,19 +29,20 @@ export function GameBoyAdvanceSpSkin({ screenContent }: SkinProps) {
           <div className="gbasp-skin__dpad">
             <div className="gbasp-skin__dpad-v" />
             <div className="gbasp-skin__dpad-h" />
+            <DpadHitzones />
           </div>
 
           <div className="gbasp-skin__center">
             <div className="gbasp-skin__logo">DOT BOY ADVANCE SP</div>
             <div className="gbasp-skin__start-select">
-              <span className="gbasp-skin__pill" />
-              <span className="gbasp-skin__pill" />
+              <button className="gbasp-skin__pill" aria-label="Select" {...bindEmulatorButton('select')} />
+              <button className="gbasp-skin__pill" aria-label="Start" {...bindEmulatorButton('start')} />
             </div>
           </div>
 
           <div className="gbasp-skin__ab">
-            <button className="gbasp-skin__btn gbasp-skin__btn--b" aria-label="B" />
-            <button className="gbasp-skin__btn gbasp-skin__btn--a" aria-label="A" />
+            <button className="gbasp-skin__btn gbasp-skin__btn--b" aria-label="B" {...bindEmulatorButton('b')} />
+            <button className="gbasp-skin__btn gbasp-skin__btn--a" aria-label="A" {...bindEmulatorButton('a')} />
           </div>
         </div>
       </div>

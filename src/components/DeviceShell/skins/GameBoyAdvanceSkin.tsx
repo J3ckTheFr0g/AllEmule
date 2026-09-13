@@ -1,4 +1,6 @@
 import type { SkinProps } from './SkinProps';
+import { bindEmulatorButton } from '../../../utils/emulatorInput';
+import { DpadHitzones } from './DpadHitzones';
 import './GameBoyAdvanceSkin.css';
 
 /**
@@ -13,13 +15,14 @@ export function GameBoyAdvanceSkin({ screenContent }: SkinProps) {
   return (
     <div className="gba-skin" data-rive-slot="gba.riv">
       <div className="gba-skin__case">
-        <div className="gba-skin__shoulder gba-skin__shoulder--l">L</div>
-        <div className="gba-skin__shoulder gba-skin__shoulder--r">R</div>
+        <button className="gba-skin__shoulder gba-skin__shoulder--l" aria-label="L" {...bindEmulatorButton('l')}>L</button>
+        <button className="gba-skin__shoulder gba-skin__shoulder--r" aria-label="R" {...bindEmulatorButton('r')}>R</button>
 
         <div className="gba-skin__top-row">
           <div className="gba-skin__dpad">
             <div className="gba-skin__dpad-v" />
             <div className="gba-skin__dpad-h" />
+            <DpadHitzones />
           </div>
 
           <div className="gba-skin__screen-bezel">
@@ -28,16 +31,16 @@ export function GameBoyAdvanceSkin({ screenContent }: SkinProps) {
           </div>
 
           <div className="gba-skin__ab">
-            <button className="gba-skin__btn gba-skin__btn--b" aria-label="B" />
-            <button className="gba-skin__btn gba-skin__btn--a" aria-label="A" />
+            <button className="gba-skin__btn gba-skin__btn--b" aria-label="B" {...bindEmulatorButton('b')} />
+            <button className="gba-skin__btn gba-skin__btn--a" aria-label="A" {...bindEmulatorButton('a')} />
           </div>
         </div>
 
         <div className="gba-skin__bottom-row">
           <div className="gba-skin__logo">DOT BOY ADVANCE</div>
           <div className="gba-skin__start-select">
-            <span className="gba-skin__pill" />
-            <span className="gba-skin__pill" />
+            <button className="gba-skin__pill" aria-label="Select" {...bindEmulatorButton('select')} />
+            <button className="gba-skin__pill" aria-label="Start" {...bindEmulatorButton('start')} />
           </div>
         </div>
       </div>

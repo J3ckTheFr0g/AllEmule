@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { bindEmulatorButton } from '../../../utils/emulatorInput';
+import { DpadHitzones } from './DpadHitzones';
 import './PcEngineGtSkin.css';
 
 export interface SkinProps {
@@ -37,30 +39,33 @@ export function PcEngineGtSkin({ screenContent }: SkinProps) {
 
         <div className="pceGt-controls">
           <div className="pceGt-dpad" role="presentation">
-            <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
-              <path
-                d="M18 4h12v12h12v12H30v12H18V28H6V16h12z"
-                fill="url(#pceGt-dpadGradient)"
-                stroke="#5a5d63"
-                strokeWidth="1.5"
-              />
-              <defs>
-                <linearGradient id="pceGt-dpadGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#3a3c40" />
-                  <stop offset="100%" stopColor="#1c1d1f" />
-                </linearGradient>
-              </defs>
-            </svg>
+            <div className="pceGt-dpad-inner">
+              <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
+                <path
+                  d="M18 4h12v12h12v12H30v12H18V28H6V16h12z"
+                  fill="url(#pceGt-dpadGradient)"
+                  stroke="#5a5d63"
+                  strokeWidth="1.5"
+                />
+                <defs>
+                  <linearGradient id="pceGt-dpadGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#3a3c40" />
+                    <stop offset="100%" stopColor="#1c1d1f" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <DpadHitzones />
+            </div>
           </div>
 
           <div className="pceGt-selectRun">
-            <span className="pceGt-pill">SELECT</span>
-            <span className="pceGt-pill">RUN</span>
+            <button className="pceGt-pill" aria-label="Select" {...bindEmulatorButton('select')}>SELECT</button>
+            <button className="pceGt-pill" aria-label="Run" {...bindEmulatorButton('start')}>RUN</button>
           </div>
 
           <div className="pceGt-actionButtons">
-            <span className="pceGt-actionBtn pceGt-actionBtn--i">I</span>
-            <span className="pceGt-actionBtn pceGt-actionBtn--ii">II</span>
+            <button className="pceGt-actionBtn pceGt-actionBtn--i" aria-label="I" {...bindEmulatorButton('a')}>I</button>
+            <button className="pceGt-actionBtn pceGt-actionBtn--ii" aria-label="II" {...bindEmulatorButton('b')}>II</button>
           </div>
         </div>
 

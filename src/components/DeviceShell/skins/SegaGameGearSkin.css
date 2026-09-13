@@ -208,7 +208,9 @@
     inset 0 1px 1px rgba(255, 255, 255, 0.15),
     inset 0 -2px 3px rgba(0, 0, 0, 0.5),
     0 2px 3px rgba(0, 0, 0, 0.5);
-  cursor: default;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
 }
 
 .gg-skin__speaker {
@@ -244,7 +246,9 @@
     inset 0 -3px 4px rgba(0, 0, 0, 0.5),
     inset 0 3px 3px rgba(255, 255, 255, 0.15),
     0 3px 5px rgba(0, 0, 0, 0.5);
-  cursor: default;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
 }
 
 .gg-skin__btn--2 {

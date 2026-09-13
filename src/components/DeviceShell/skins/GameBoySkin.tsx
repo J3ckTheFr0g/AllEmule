@@ -1,4 +1,6 @@
 import type { SkinProps } from './SkinProps';
+import { bindEmulatorButton } from '../../../utils/emulatorInput';
+import { DpadHitzones } from './DpadHitzones';
 import './GameBoySkin.css';
 
 /**
@@ -49,13 +51,14 @@ export function GameBoySkin({ screenContent }: SkinProps) {
             <div className="gb-skin__dpad">
               <div className="gb-skin__dpad-cross" />
               <div className="gb-skin__dpad-center" />
+              <DpadHitzones />
             </div>
 
             <div className="gb-skin__ab">
-              <button className="gb-skin__btn gb-skin__btn--b" aria-label="B">
+              <button className="gb-skin__btn gb-skin__btn--b" aria-label="B" {...bindEmulatorButton('b')}>
                 <span>B</span>
               </button>
-              <button className="gb-skin__btn gb-skin__btn--a" aria-label="A">
+              <button className="gb-skin__btn gb-skin__btn--a" aria-label="A" {...bindEmulatorButton('a')}>
                 <span>A</span>
               </button>
             </div>
@@ -63,11 +66,11 @@ export function GameBoySkin({ screenContent }: SkinProps) {
 
           <div className="gb-skin__meta">
             <div className="gb-skin__pill-group">
-              <span className="gb-skin__pill" />
+              <button className="gb-skin__pill" aria-label="Select" {...bindEmulatorButton('select')} />
               <span className="gb-skin__pill-label">SELECT</span>
             </div>
             <div className="gb-skin__pill-group">
-              <span className="gb-skin__pill" />
+              <button className="gb-skin__pill" aria-label="Start" {...bindEmulatorButton('start')} />
               <span className="gb-skin__pill-label">START</span>
             </div>
           </div>

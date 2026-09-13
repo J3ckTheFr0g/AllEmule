@@ -1,4 +1,6 @@
 import type { SkinProps } from './SkinProps';
+import { bindEmulatorButton } from '../../../utils/emulatorInput';
+import { DpadHitzones } from './DpadHitzones';
 import './GameBoyColorSkin.css';
 
 /**
@@ -27,18 +29,19 @@ export function GameBoyColorSkin({ screenContent }: SkinProps) {
           <div className="gbc-skin__dpad">
             <div className="gbc-skin__dpad-v" />
             <div className="gbc-skin__dpad-h" />
+            <DpadHitzones />
           </div>
 
           <div className="gbc-skin__ab">
-            <button className="gbc-skin__btn gbc-skin__btn--b" aria-label="B" />
-            <button className="gbc-skin__btn gbc-skin__btn--a" aria-label="A" />
+            <button className="gbc-skin__btn gbc-skin__btn--b" aria-label="B" {...bindEmulatorButton('b')} />
+            <button className="gbc-skin__btn gbc-skin__btn--a" aria-label="A" {...bindEmulatorButton('a')} />
           </div>
         </div>
 
         <div className="gbc-skin__meta">
           <div className="gbc-skin__start-select">
-            <span className="gbc-skin__pill" />
-            <span className="gbc-skin__pill" />
+            <button className="gbc-skin__pill" aria-label="Select" {...bindEmulatorButton('select')} />
+            <button className="gbc-skin__pill" aria-label="Start" {...bindEmulatorButton('start')} />
           </div>
           <div className="gbc-skin__labels">
             <span>SELECT</span>

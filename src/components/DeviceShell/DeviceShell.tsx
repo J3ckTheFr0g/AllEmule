@@ -2,8 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDeviceStateMachine } from '../../hooks/useDeviceStateMachine';
 import { readRomFile } from '../../detection/consoleDetector';
 import { AmbiguousRomError } from '../../detection/consoleDetector';
-import { CONSOLE_SPECS, CONSOLE_DISPLAY_NAMES, ConsoleType } from '../../models/consoleTypes';
+import {
+  CONSOLE_SPECS,
+  CONSOLE_DISPLAY_NAMES,
+  CONSOLE_FILE_EXTENSIONS,
+  ConsoleType,
+} from '../../models/consoleTypes';
 import { CONSOLE_SKINS, UnsupportedConsoleNotice } from './skins';
+import { ConsoleStand } from './ConsoleStand';
 import './DeviceShell.css';
 
 const ANIM_DURATIONS_MS = {
@@ -19,6 +25,19 @@ export function DeviceShell() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const emulatorContainerRef = useRef<HTMLDivElement>(null);
+  // Console choisie dans le ConsoleStand avant l'ouverture du selecteur de
+  // fichier : lue par handleFileSelected pour forcer ce type au chargement
+  // plutot que de se fier a la detection automatique (utile notamment pour
+  // GBA vs GBA SP, indiscernables par le contenu de la ROM).
+  const pendingStandSelectionRef = useRef<ConsoleType | null>(null);
+
+  const handleStandSelect = useCallback((type: ConsoleType) => {
+    pendingStandSelectionRef.current = type;
+    const input = fileInputRef.current;
+    if (!input) return;
+    input.accept = (CONSOLE_FILE_EXTENSIONS[type] ?? []).join(',');
+    input.click();
+  }, []);
 
   const handleFileSelected = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,9 +45,12 @@ export function DeviceShell() {
       if (!file) return;
       setErrorMessage(null);
 
+      const forcedConsole = pendingStandSelectionRef.current ?? undefined;
+      pendingStandSelectionRef.current = null;
+
       try {
         const bytes = await readRomFile(file);
-        machine.loadRom(bytes, file.name);
+        machine.loadRom(bytes, file.name, forcedConsole);
         setRomBlobUrl(URL.createObjectURL(file));
       } catch (err) {
         if (err instanceof AmbiguousRomError) {
@@ -109,6 +131,15 @@ export function DeviceShell() {
     // Evite de requerir les en-tetes COOP/COEP (SharedArrayBuffer) pour
     // fonctionner aussi bien en dev qu'une fois deploye sur GitHub Pages.
     (window as any).EJS_threads = false;
+    // Force le mode "desktop" : supprime l'overlay tactile virtuel natif
+    // d'EmulatorJS (croix/A/B/Select/Start/Fast/Slow semi-transparents),
+    // concu pour un canvas plein ecran et illisible une fois compresse
+    // dans le petit ecran du boitier (cf. capture utilisateur montrant
+    // l'overlay superpose au jeu). Les boutons DESSINES sur le skin sont
+    // cables (src/utils/emulatorInput.ts) pour envoyer les memes touches
+    // clavier qu'EmulatorJS ecoute par defaut, donc le jeu reste jouable
+    // au tactile malgre la desactivation de son propre overlay.
+    (window as any).EJS_browserMode = 2;
     // Console d'origine : pas d'avance/ralenti rapide. Le menu natif
     // EmulatorJS (parametres, sauvegardes, cheats...) est aussi masque : concu
     // pour un plein ecran desktop, il deborde et se coupe une fois compresse
@@ -219,15 +250,6 @@ export function DeviceShell() {
   // recouvrait tout l'ecran).
   const innerContent = (
     <div className="device-shell__screen-content">
-      {state === 'off' && (
-        <div className="device-shell__prompt">
-          <p>Console eteinte</p>
-          <button onClick={() => fileInputRef.current?.click()}>
-            Charger une ROM
-          </button>
-        </div>
-      )}
-
       {state === 'romInserting' && (
         <div className="device-shell__cartridge-insert" />
       )}
@@ -268,27 +290,30 @@ export function DeviceShell() {
     <div className={`device-shell ${orientationClass}`}>
       {errorMessage && <div className="device-shell__error">{errorMessage}</div>}
 
-      <div
-        className={`device-shell__body ${
-          SkinComponent || isUnsupported ? '' : 'device-shell__body--generic'
-        }`}
-      >
-        {isUnsupported && displayConsole ? (
-          <UnsupportedConsoleNotice
-            consoleName={CONSOLE_DISPLAY_NAMES[displayConsole]}
-            onDismiss={() => machine.cancelUnsupportedConsole()}
-          />
-        ) : SkinComponent ? (
-          <SkinComponent screenContent={innerContent} />
-        ) : (
-          innerContent
-        )}
-      </div>
+      {state === 'off' ? (
+        <ConsoleStand onSelect={handleStandSelect} />
+      ) : (
+        <div
+          className={`device-shell__body ${
+            SkinComponent || isUnsupported ? '' : 'device-shell__body--generic'
+          }`}
+        >
+          {isUnsupported && displayConsole ? (
+            <UnsupportedConsoleNotice
+              consoleName={CONSOLE_DISPLAY_NAMES[displayConsole]}
+              onDismiss={() => machine.cancelUnsupportedConsole()}
+            />
+          ) : SkinComponent ? (
+            <SkinComponent screenContent={innerContent} />
+          ) : (
+            innerContent
+          )}
+        </div>
+      )}
 
       <input
         ref={fileInputRef}
         type="file"
-        accept=".gb,.gbc,.gba,.lnx,.gg,.pce,.ngp,.ngc"
         onChange={handleFileSelected}
         style={{ display: 'none' }}
       />
