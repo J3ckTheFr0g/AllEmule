@@ -20,7 +20,7 @@ export function NeoGeoPocketSkin({ screenContent }: SkinProps) {
     <div className="ngp-shell" data-rive-slot="neo_geo_pocket.riv">
       <div className="ngp-body">
         <div className="ngp-headerRow">
-          <span className="ngp-brand">NEOGEO</span>
+          <span className="ngp-brand">ARC</span>
           <span className="ngp-brandPocket">POCKET</span>
         </div>
 

@@ -109,10 +109,30 @@ export function DeviceShell() {
     // Evite de requerir les en-tetes COOP/COEP (SharedArrayBuffer) pour
     // fonctionner aussi bien en dev qu'une fois deploye sur GitHub Pages.
     (window as any).EJS_threads = false;
-    // Console d'origine : pas d'avance/ralenti rapide.
+    // Console d'origine : pas d'avance/ralenti rapide. Le menu natif
+    // EmulatorJS (parametres, sauvegardes, cheats...) est aussi masque : concu
+    // pour un plein ecran desktop, il deborde et se coupe une fois compresse
+    // dans le petit ecran du boitier (cf. capture utilisateur). Un vrai menu
+    // "dans l'esprit console", navigable avec les boutons du boitier, est une
+    // fonctionnalite a part entiere a construire plus tard si voulue.
     (window as any).EJS_Buttons = {
       fastForward: false,
       slowMotion: false,
+      contextMenu: false,
+      settings: false,
+      saveState: false,
+      loadState: false,
+      quickSave: false,
+      quickLoad: false,
+      cheat: false,
+      screenRecord: false,
+      cacheManager: false,
+      netplay: false,
+      gamepad: false,
+      saveSavFiles: false,
+      loadSavFiles: false,
+      screenshot: false,
+      exitEmulation: false,
     };
     (window as any).EJS_onGameStart = () => setErrorMessage(null);
     // EJS_onExit se declenche quand EmulatorJS quitte/plante le jeu en cours
@@ -192,8 +212,13 @@ export function DeviceShell() {
       ? 'orientation-landscape'
       : 'orientation-portrait';
 
+  // Un skin applique `width:100%; height:100%` au SEUL enfant direct de la
+  // zone ecran (voir ex. `.gb-skin__screen > *`). Il faut donc toujours
+  // rendre un unique noeud racine ici, jamais deux freres (l'ancien bug :
+  // le bouton "Eteindre" comme 2e enfant se faisait etirer a 100% et
+  // recouvrait tout l'ecran).
   const innerContent = (
-    <>
+    <div className="device-shell__screen-content">
       {state === 'off' && (
         <div className="device-shell__prompt">
           <p>Console eteinte</p>
@@ -224,7 +249,7 @@ export function DeviceShell() {
       {state === 'poweringOn' && <div className="device-shell__boot-flash" />}
 
       {state === 'playing' && !isUnsupported && (
-        <>
+        <div className="device-shell__playing">
           <div ref={emulatorContainerRef} className="device-shell__emulator" />
           <button
             className="device-shell__power-off"
@@ -232,18 +257,22 @@ export function DeviceShell() {
           >
             Eteindre
           </button>
-        </>
+        </div>
       )}
 
       {state === 'poweringOff' && <div className="device-shell__boot-flash" />}
-    </>
+    </div>
   );
 
   return (
     <div className={`device-shell ${orientationClass}`}>
       {errorMessage && <div className="device-shell__error">{errorMessage}</div>}
 
-      <div className={`device-shell__body device-shell__body--${state}`}>
+      <div
+        className={`device-shell__body ${
+          SkinComponent || isUnsupported ? '' : 'device-shell__body--generic'
+        }`}
+      >
         {isUnsupported && displayConsole ? (
           <UnsupportedConsoleNotice
             consoleName={CONSOLE_DISPLAY_NAMES[displayConsole]}

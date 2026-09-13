@@ -30,7 +30,7 @@ export function GameBoyAdvanceSpSkin({ screenContent }: SkinProps) {
           </div>
 
           <div className="gbasp-skin__center">
-            <div className="gbasp-skin__logo">GAME BOY ADVANCE SP</div>
+            <div className="gbasp-skin__logo">DOT BOY ADVANCE SP</div>
             <div className="gbasp-skin__start-select">
               <span className="gbasp-skin__pill" />
               <span className="gbasp-skin__pill" />

@@ -30,7 +30,7 @@ export function PcEngineGtSkin({ screenContent }: SkinProps) {
             <div className="pceGt-screen">{screenContent}</div>
           </div>
           <div className="pceGt-brandRow">
-            <span className="pceGt-brand">PC ENGINE</span>
+            <span className="pceGt-brand">CORE ENGINE</span>
             <span className="pceGt-brandGt">GT</span>
           </div>
         </div>
