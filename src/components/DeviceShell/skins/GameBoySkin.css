@@ -4,62 +4,109 @@
   align-items: center;
   width: 100%;
   height: 100%;
+  perspective: 900px;
+}
+
+.gb-skin__stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .gb-skin__case {
   position: relative;
-  width: 300px;
+  width: 280px;
   max-width: 100%;
-  aspect-ratio: 300 / 480;
-  background: linear-gradient(155deg, #d3d5cf 0%, #c7c9c2 45%, #b7b9b2 100%);
-  border-radius: 14px 14px 46px 14px;
+  aspect-ratio: 280 / 460;
+  background:
+    linear-gradient(100deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 18%),
+    linear-gradient(155deg, #dedcd0 0%, #d2cfc0 30%, #c3bfae 65%, #b3af9c 100%);
+  border-radius: 12px 12px 52px 12px;
   box-shadow:
-    inset 0 2px 3px rgba(255, 255, 255, 0.6),
-    inset 0 -6px 10px rgba(0, 0, 0, 0.12),
-    0 10px 24px rgba(0, 0, 0, 0.35);
-  padding: 22px 20px 28px;
+    inset 0 3px 2px rgba(255, 255, 255, 0.7),
+    inset 0 -10px 16px rgba(0, 0, 0, 0.14),
+    inset 6px 0 10px -6px rgba(255, 255, 255, 0.35),
+    inset -8px 0 14px -8px rgba(0, 0, 0, 0.18),
+    0 2px 0 rgba(0, 0, 0, 0.25),
+    0 18px 30px -8px rgba(0, 0, 0, 0.45);
+  padding: 20px 18px 26px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  transform: rotateX(4deg) rotateY(-3deg);
+  transform-style: preserve-3d;
+}
+
+/* Fin voile de brillance diagonal, comme une photo sous eclairage studio. */
+.gb-skin__case-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.05) 12%,
+    rgba(255, 255, 255, 0) 30%
+  );
+  pointer-events: none;
+}
+
+/* Trait fin en haut du boitier suggerant la trappe cartouche au dos. */
+.gb-skin__cartridge-seam {
+  position: absolute;
+  top: 6px;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.18) 15%, rgba(0, 0, 0, 0.18) 85%, transparent);
 }
 
 .gb-skin__screen-bezel {
   position: relative;
-  background: #6b6f8a;
-  border-radius: 8px;
-  padding: 18px 16px 22px;
+  background: linear-gradient(160deg, #6a6a82 0%, #4c4b60 55%, #3e3d4f 100%);
+  border-radius: 6px 6px 26px 6px;
+  padding: 16px 14px 20px;
   box-shadow:
-    inset 0 3px 6px rgba(0, 0, 0, 0.5),
-    inset 0 -2px 2px rgba(255, 255, 255, 0.08);
+    inset 0 4px 8px rgba(0, 0, 0, 0.55),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
-.gb-skin__brand {
-  display: block;
-  font-size: 9px;
-  font-style: italic;
+.gb-skin__power-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 7px;
   font-weight: 700;
-  color: #eef0f5;
-  letter-spacing: 0.02em;
-  margin-bottom: 6px;
+  letter-spacing: 0.08em;
+  color: #d8d9e6;
+  margin-bottom: 8px;
 }
 
 .gb-skin__power-led {
-  position: absolute;
-  top: 8px;
-  right: 12px;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: #e63946;
-  box-shadow: 0 0 4px 1px rgba(230, 57, 70, 0.8);
+  background: radial-gradient(circle at 35% 30%, #ff8b8b, #c81f2e 70%);
+  box-shadow: 0 0 4px 1px rgba(230, 40, 50, 0.85);
+}
+
+.gb-skin__screen-glass {
+  position: relative;
+  aspect-ratio: 10 / 9;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 0 3px #26262f,
+    inset 0 2px 5px rgba(0, 0, 0, 0.6);
 }
 
 .gb-skin__screen {
-  background: #8f9b6e;
-  aspect-ratio: 10 / 9;
-  border-radius: 2px;
-  box-shadow: inset 0 0 0 2px #3a3d2e;
-  overflow: hidden;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, #9aa876 0%, #8b9968 55%, #7c8a5b 100%);
   display: flex;
   align-items: stretch;
   justify-content: stretch;
@@ -70,15 +117,71 @@
   height: 100%;
 }
 
-.gb-skin__logo {
-  margin: 14px 4px 0;
+/* Legere trame de lignes horizontales, tres discrete pour ne pas gener
+   la lisibilite du jeu quand l'emulateur est monte dans screenContent. */
+.gb-skin__screen-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.08) 0px,
+    rgba(0, 0, 0, 0.08) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Reflet de vitre diagonal, comme une photo d'ecran sous lumiere. */
+.gb-skin__screen-glare {
+  position: absolute;
+  top: -40%;
+  left: -20%;
+  width: 60%;
+  height: 180%;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0.06) 40%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: rotate(8deg);
+  pointer-events: none;
+}
+
+.gb-skin__brandplate {
+  margin: 16px 6px 2px;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.gb-skin__brand-nintendo {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 11px;
+  color: #3d4066;
+  letter-spacing: 0.02em;
+}
+
+.gb-skin__brand-gameboy {
   font-family: 'Arial Black', Arial, sans-serif;
   font-style: italic;
   font-weight: 900;
-  font-size: 20px;
-  letter-spacing: 0.01em;
+  font-size: 21px;
   color: #3d4066;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.gb-skin__dotmatrix-label {
+  margin: 2px 6px 0;
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #5b5e46;
 }
 
 .gb-skin__controls {
@@ -86,57 +189,73 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 10px;
-  padding: 0 4px;
+  margin-top: 12px;
+  padding: 0 6px;
 }
 
 .gb-skin__dpad {
   position: relative;
-  width: 84px;
-  height: 84px;
+  width: 78px;
+  height: 78px;
 }
 
-.gb-skin__dpad-v,
-.gb-skin__dpad-h {
+.gb-skin__dpad-cross {
   position: absolute;
-  background: #2b2b2f;
-  border-radius: 3px;
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.15), 0 2px 3px rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background: linear-gradient(160deg, #3a3a3f 0%, #201f24 100%);
+  clip-path: polygon(
+    36% 0%, 64% 0%, 64% 36%, 100% 36%, 100% 64%,
+    64% 64%, 64% 100%, 36% 100%, 36% 64%, 0% 64%, 0% 36%, 36% 36%
+  );
+  box-shadow:
+    inset 0 2px 2px rgba(255, 255, 255, 0.18),
+    inset 0 -3px 4px rgba(0, 0, 0, 0.5),
+    0 3px 4px rgba(0, 0, 0, 0.4);
 }
 
-.gb-skin__dpad-v {
+.gb-skin__dpad-center {
+  position: absolute;
   left: 50%;
-  top: 0;
-  width: 28px;
-  height: 100%;
-  transform: translateX(-50%);
-}
-
-.gb-skin__dpad-h {
   top: 50%;
-  left: 0;
-  height: 28px;
-  width: 100%;
-  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 40% 35%, #4a4a52, #17171a 75%);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
 }
 
 .gb-skin__ab {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   transform: rotate(-25deg);
 }
 
 .gb-skin__btn {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 40px;
   border-radius: 50%;
   border: none;
-  background: radial-gradient(circle at 35% 30%, #7a2350, #5b1a3d 70%);
+  padding: 0;
+  background: radial-gradient(circle at 32% 26%, #93315c, #601a3c 65%, #4a1230 100%);
   box-shadow:
-    inset 0 -2px 3px rgba(0, 0, 0, 0.4),
-    inset 0 2px 2px rgba(255, 255, 255, 0.15),
-    0 3px 4px rgba(0, 0, 0, 0.35);
+    inset 0 -3px 4px rgba(0, 0, 0, 0.45),
+    inset 0 3px 3px rgba(255, 255, 255, 0.2),
+    0 3px 5px rgba(0, 0, 0, 0.4);
   cursor: default;
+  position: relative;
+}
+
+.gb-skin__btn span {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.28);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .gb-skin__btn--b {
@@ -144,42 +263,42 @@
 }
 
 .gb-skin__meta {
-  margin-top: 18px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  transform: rotate(-25deg);
+}
+
+.gb-skin__pill-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.gb-skin__start-select {
-  display: flex;
-  gap: 18px;
-  transform: rotate(-25deg);
+  gap: 3px;
 }
 
 .gb-skin__pill {
   width: 26px;
   height: 8px;
   border-radius: 5px;
-  background: #6b6f74;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(160deg, #83858a 0%, #63656a 100%);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), inset 0 -1px 1px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-.gb-skin__labels {
-  display: flex;
-  gap: 12px;
-  margin-top: 4px;
-  font-size: 8px;
+.gb-skin__pill-label {
+  font-size: 6px;
   font-weight: 700;
   color: #3d4066;
+  letter-spacing: 0.04em;
 }
 
 .gb-skin__speaker {
   position: absolute;
-  right: 20px;
-  bottom: 22px;
+  right: 18px;
+  bottom: 20px;
   display: grid;
-  grid-template-columns: repeat(2, 6px);
-  gap: 5px;
+  grid-template-columns: repeat(3, 6px);
+  gap: 4px;
   transform: rotate(-25deg);
 }
 
@@ -187,6 +306,35 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #9a9c96;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3);
+  background: radial-gradient(circle at 35% 30%, #a5a79e, #86887e 70%);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.35);
+}
+
+/* Fine tranche de molette de volume visible sur le bord droit du boitier. */
+.gb-skin__volume-wheel {
+  position: absolute;
+  right: -3px;
+  bottom: 96px;
+  width: 6px;
+  height: 22px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(
+    0deg,
+    #8d8a7c 0px,
+    #8d8a7c 2px,
+    #6f6c60 2px,
+    #6f6c60 3px
+  );
+  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.35);
+}
+
+/* Ombre de contact au sol : donne l'impression que le boitier repose/est
+   tenu en main plutot que colle a plat sur un fond uni. */
+.gb-skin__contact-shadow {
+  width: 74%;
+  height: 18px;
+  margin-top: 10px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0) 72%);
+  filter: blur(1px);
 }
