@@ -1,0 +1,89 @@
+.dotBoySpShelf-case {
+  width: 100%;
+  aspect-ratio: 420 / 300;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.dotBoySpShelf-lid {
+  flex: 1.1;
+  background:
+    linear-gradient(100deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 18%),
+    linear-gradient(155deg, #5a6572 0%, #3a424c 60%, #2c333b 100%);
+  border-radius: 8px 8px 3px 3px;
+  padding: 8%;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.dotBoySpShelf-screenBezel {
+  flex: 1;
+  background: #16161c;
+  border-radius: 4px;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.5);
+  padding: 10%;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.dotBoySpShelf-screen {
+  flex: 1;
+  background: #7a8a6a;
+  border-radius: 2px;
+}
+
+.dotBoySpShelf-hinge {
+  height: 6%;
+  background: linear-gradient(180deg, #1c1e22, #0e0f11);
+}
+
+.dotBoySpShelf-base {
+  flex: 1;
+  background: linear-gradient(155deg, #4b5560 0%, #3a424c 60%, #2c333b 100%);
+  border-radius: 3px 3px 8px 8px;
+  padding: 8%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4%;
+}
+
+.dotBoySpShelf-dpad {
+  position: relative;
+  width: 22%;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+
+.dotBoySpShelf-dpadCross {
+  position: absolute;
+  inset: 0;
+  background: #1a1a1e;
+  clip-path: polygon(36% 0%, 64% 0%, 64% 36%, 100% 36%, 100% 64%, 64% 64%, 64% 100%, 36% 100%, 36% 64%, 0% 64%, 0% 36%, 36% 36%);
+}
+
+.dotBoySpShelf-logo {
+  flex: 1;
+  text-align: center;
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 5px;
+  color: #d8dce0;
+}
+
+.dotBoySpShelf-ab {
+  display: flex;
+  gap: 6%;
+  flex-shrink: 0;
+}
+
+.dotBoySpShelf-btn {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #7a2350, #5b1a3d 70%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
