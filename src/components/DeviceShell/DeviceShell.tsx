@@ -13,6 +13,7 @@ import {
 import { CONSOLE_SKINS, UnsupportedConsoleNotice } from './skins';
 import { ConsoleStand } from './ConsoleStand';
 import { Cartridge } from './Cartridge';
+import { SKIN_DESIGN_SIZE, SKIN_DESIGN_SIZE_PORTRAIT } from './skinDesignSizes';
 import './DeviceShell.css';
 
 const ANIM_DURATIONS_MS = {
@@ -23,34 +24,22 @@ const ANIM_DURATIONS_MS = {
 };
 
 /**
- * Taille de reference (design pixel-perfect) de chaque skin, utilisee par
- * `.device-shell__skin-scale` (DeviceShell.css) pour l'agrandir/reduire en
- * un seul bloc jusqu'a remplir l'ecran sans bandes noires ni deformer les
- * proportions internes (D-pad, boutons...). Doit correspondre a la
- * largeur/aspect-ratio fixes dans le CSS `__case` de chaque skin. Les
- * skins deja fluides en interne (PC Engine GT, Neo Geo Pocket - a revoir
- * avec de nouveaux visuels prochainement) n'ont pas d'entree ici et
- * gardent leur propre mise a l'echelle vw.
+ * Consoles dont le skin est deja bati en boite fixe (`width`/`aspect-ratio`
+ * fixes sur son `__case`) : celles-ci sont mises a l'echelle en un bloc
+ * par `.device-shell__skin-scale`. PC Engine GT et Neo Geo Pocket gardent
+ * pour l'instant leur propre mise a l'echelle interne en vw (elles ne
+ * seraient pas correctement contenues si on leur imposait en plus une
+ * boite de reference, puisque leurs unites vw regardent le vrai viewport
+ * et ignorent le wrapper transforme).
  */
-const SKIN_DESIGN_SIZE: Partial<Record<ConsoleType, { width: number; height: number }>> = {
-  [ConsoleType.GameBoy]: { width: 280, height: 460 },
-  [ConsoleType.GameBoyColor]: { width: 280, height: 430 },
-  [ConsoleType.GameBoyAdvance]: { width: 480, height: 260 },
-  [ConsoleType.GameBoyAdvanceSp]: { width: 420, height: 300 },
-  [ConsoleType.AtariLynx]: { width: 480, height: 280 },
-  [ConsoleType.SegaGameGear]: { width: 460, height: 288 },
-};
-
-/**
- * Consoles dont le skin propose une mise en page alternative quand le
- * telephone est tenu en portrait (voir AtariLynxSkin + useViewportOrientation)
- * plutot que la seule orientation figee de CONSOLE_SPECS. Doit
- * correspondre a l'aspect-ratio `.xxx-skin--portrait` declare dans le CSS
- * du skin concerne.
- */
-const SKIN_DESIGN_SIZE_PORTRAIT: Partial<Record<ConsoleType, { width: number; height: number }>> = {
-  [ConsoleType.AtariLynx]: { width: 300, height: 480 },
-};
+const SCALE_WRAPPED_CONSOLES = new Set<ConsoleType>([
+  ConsoleType.GameBoy,
+  ConsoleType.GameBoyColor,
+  ConsoleType.GameBoyAdvance,
+  ConsoleType.GameBoyAdvanceSp,
+  ConsoleType.AtariLynx,
+  ConsoleType.SegaGameGear,
+]);
 
 export function DeviceShell() {
   const { machine, state, currentConsole, pendingConsole } = useDeviceStateMachine();
@@ -353,10 +342,11 @@ export function DeviceShell() {
     </div>
   );
 
-  const designSize = displayConsole
-    ? (viewportOrientation === 'portrait' && SKIN_DESIGN_SIZE_PORTRAIT[displayConsole]) ||
-      SKIN_DESIGN_SIZE[displayConsole]
-    : undefined;
+  const designSize =
+    displayConsole && SCALE_WRAPPED_CONSOLES.has(displayConsole)
+      ? (viewportOrientation === 'portrait' && SKIN_DESIGN_SIZE_PORTRAIT[displayConsole]) ||
+        SKIN_DESIGN_SIZE[displayConsole]
+      : undefined;
   const skinElement = SkinComponent ? <SkinComponent screenContent={innerContent} /> : null;
 
   return (
