@@ -15,7 +15,6 @@ import { ConsoleStand } from './ConsoleStand';
 import { Cartridge } from './Cartridge';
 import {
   SKIN_DESIGN_SIZE,
-  SKIN_DESIGN_SIZE_PORTRAIT,
   SKIN_DESIGN_SIZE_LANDSCAPE,
 } from './skinDesignSizes';
 import './DeviceShell.css';
@@ -28,13 +27,12 @@ const ANIM_DURATIONS_MS = {
 };
 
 /**
- * Consoles dont le skin est deja bati en boite fixe (`width`/`aspect-ratio`
- * fixes sur son `__case`) : celles-ci sont mises a l'echelle en un bloc
- * par `.device-shell__skin-scale`. PC Engine GT et Neo Geo Pocket gardent
- * pour l'instant leur propre mise a l'echelle interne en vw (elles ne
- * seraient pas correctement contenues si on leur imposait en plus une
- * boite de reference, puisque leurs unites vw regardent le vrai viewport
- * et ignorent le wrapper transforme).
+ * Consoles dont le skin est bati en boite fixe (`width`/`aspect-ratio`
+ * fixes sur son `__case`, pas de vw interne) : mises a l'echelle en un
+ * bloc par `.device-shell__skin-scale`. Couvre desormais toutes les
+ * consoles jouables (Game Boy family + les cartes portrait "coque de
+ * telephone" Lynx/Game Gear/PC Engine GT/Neo Geo Pocket, avec rotation en
+ * paysage - voir SKIN_DESIGN_SIZE_LANDSCAPE).
  */
 const SCALE_WRAPPED_CONSOLES = new Set<ConsoleType>([
   ConsoleType.GameBoy,
@@ -43,6 +41,8 @@ const SCALE_WRAPPED_CONSOLES = new Set<ConsoleType>([
   ConsoleType.GameBoyAdvanceSp,
   ConsoleType.AtariLynx,
   ConsoleType.SegaGameGear,
+  ConsoleType.PcEngineGt,
+  ConsoleType.NeoGeoPocket,
 ]);
 
 export function DeviceShell() {
@@ -342,8 +342,7 @@ export function DeviceShell() {
 
   const designSize =
     displayConsole && SCALE_WRAPPED_CONSOLES.has(displayConsole)
-      ? (viewportOrientation === 'portrait' && SKIN_DESIGN_SIZE_PORTRAIT[displayConsole]) ||
-        (viewportOrientation === 'landscape' && SKIN_DESIGN_SIZE_LANDSCAPE[displayConsole]) ||
+      ? (viewportOrientation === 'landscape' && SKIN_DESIGN_SIZE_LANDSCAPE[displayConsole]) ||
         SKIN_DESIGN_SIZE[displayConsole]
       : undefined;
   const skinElement = SkinComponent ? <SkinComponent screenContent={innerContent} /> : null;

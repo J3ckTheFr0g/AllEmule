@@ -1,0 +1,102 @@
+.ngpShelf-case {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 8 / 9;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #f4f4f2 0%, #dedfdc 45%, #c5c6c3 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 8%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 5%;
+}
+
+.ngpShelf-topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ngpShelf-power {
+  width: 10px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #4a4b4d, #1c1d1e);
+}
+
+.ngpShelf-option {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #6c6d71;
+}
+
+.ngpShelf-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 0.7fr 1.4fr 0.7fr;
+  align-items: center;
+  gap: 5%;
+}
+
+.ngpShelf-stick {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #2b2c2f, #101112 85%);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.ngpShelf-stickNub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42%;
+  height: 42%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 35% 30%, #4a4b4f, #19191b 85%);
+}
+
+.ngpShelf-screenBezel {
+  height: 100%;
+  border-radius: 4px;
+  background: #050506;
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.6);
+  padding: 10%;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.ngpShelf-screen {
+  flex: 1;
+  background: #16171a;
+  border-radius: 2px;
+}
+
+.ngpShelf-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8%;
+  justify-self: center;
+}
+
+.ngpShelf-btn {
+  aspect-ratio: 1;
+  width: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #d9dadd, #9a9ba0 65%, #6c6d71 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.ngpShelf-brand {
+  text-align: center;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #3a3b3e;
+}

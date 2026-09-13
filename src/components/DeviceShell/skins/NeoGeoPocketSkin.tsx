@@ -1,67 +1,77 @@
-import type { ReactNode } from 'react';
+import type { SkinProps } from './SkinProps';
 import { bindEmulatorButton } from '../../../utils/emulatorInput';
+import { useViewportOrientation } from '../../../hooks/useViewportOrientation';
 import { DpadHitzones } from './DpadHitzones';
 import './NeoGeoPocketSkin.css';
 
-export interface SkinProps {
-  screenContent: ReactNode;
-}
-
 /**
- * Skin pour la SNK Neo Geo Pocket : petit boitier horizontal anguleux,
- * ecran carre-ish centre, joystick miniature a gauche (pas une croix
- * classique), deux boutons A/B a droite. Finition sobre anthracite/argent.
- * Rendu en CSS pur + SVG inline, aucune image externe.
+ * Rendu "coque de telephone" en PORTRAIT natif (meme logique que
+ * SegaGameGearSkin/AtariLynxSkin) : grand ecran qui domine la carte,
+ * cluster de controles compact en bas (joystick, A/B, Start/Option).
+ *
+ * Le mode paysage n'est pas une disposition differente : c'est la MEME
+ * carte tournee de 90 degres (`.ngp-skin__case--rotated`, pilote par
+ * useViewportOrientation).
+ *
+ * Marque fictive "ARC POCKET" (voir CONSOLE_DISPLAY_NAMES). L'apparence
+ * AUTHENTIQUE du vrai boitier vit a part, dans l'icone d'etagere dediee
+ * (shelfIcons/NeoGeoPocketShelfIcon.tsx), pas ici.
  *
  * data-rive-slot sert de point d'ancrage pour une future animation Rive
  * (neo_geo_pocket.riv, cf. src/models/consoleTypes.ts) ; stand-in statique
  * en attendant un vrai fichier .riv.
  */
 export function NeoGeoPocketSkin({ screenContent }: SkinProps) {
+  const isLandscape = useViewportOrientation() === 'landscape';
+
   return (
-    <div className="ngp-shell" data-rive-slot="neo_geo_pocket.riv">
-      <div className="ngp-body">
-        <div className="ngp-headerRow">
-          <span className="ngp-brand">ARC</span>
-          <span className="ngp-brandPocket">POCKET</span>
+    <div className="ngp-skin" data-rive-slot="neo_geo_pocket.riv" role="img" aria-label="Arc Pocket">
+      <div className={`ngp-skin__case ${isLandscape ? 'ngp-skin__case--rotated' : ''}`}>
+        <div className="ngp-skin__case-sheen" />
+
+        <div className="ngp-skin__header">
+          <span className="ngp-skin__brand-name">ARC POCKET</span>
+          <span className="ngp-skin__power-dot" />
         </div>
 
-        <div className="ngp-screenBezel">
-          <div className="ngp-screen">{screenContent}</div>
-        </div>
-
-        <div className="ngp-controls">
-          <div className="ngp-stickWell" role="presentation">
-            <div className="ngp-stickWell-inner">
-              <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
-                <circle cx="20" cy="20" r="18" fill="url(#ngp-wellGradient)" stroke="#0c0c0d" strokeWidth="1" />
-                <circle cx="20" cy="20" r="8" fill="url(#ngp-stickGradient)" stroke="#1a1a1c" strokeWidth="1" />
-                <defs>
-                  <radialGradient id="ngp-wellGradient" cx="0.35" cy="0.3" r="0.9">
-                    <stop offset="0%" stopColor="#2b2c2f" />
-                    <stop offset="100%" stopColor="#101112" />
-                  </radialGradient>
-                  <radialGradient id="ngp-stickGradient" cx="0.35" cy="0.3" r="0.9">
-                    <stop offset="0%" stopColor="#4a4b4f" />
-                    <stop offset="100%" stopColor="#19191b" />
-                  </radialGradient>
-                </defs>
-              </svg>
-              <DpadHitzones />
-            </div>
-          </div>
-
-          <div className="ngp-centerRow">
-            <button className="ngp-pill" aria-label="Start" {...bindEmulatorButton('start')}>START</button>
-          </div>
-
-          <div className="ngp-actionButtons">
-            <button className="ngp-actionBtn ngp-actionBtn--a" aria-label="A" {...bindEmulatorButton('a')}>A</button>
-            <button className="ngp-actionBtn ngp-actionBtn--b" aria-label="B" {...bindEmulatorButton('b')}>B</button>
+        <div className="ngp-skin__screen-bezel">
+          <div className="ngp-skin__screen-glass">
+            <div className="ngp-skin__screen">{screenContent}</div>
+            <div className="ngp-skin__screen-glare" />
           </div>
         </div>
 
-        <div className="ngp-powerLed" aria-hidden="true" />
+        <div className="ngp-skin__controls">
+          <div className="ngp-skin__stick" role="presentation">
+            <div className="ngp-skin__stick-well" />
+            <div className="ngp-skin__stick-nub" />
+            <DpadHitzones />
+          </div>
+
+          <div className="ngp-skin__mid">
+            <button className="ngp-skin__pill" aria-label="Option" {...bindEmulatorButton('select')}>
+              OPTION
+            </button>
+            <button className="ngp-skin__pill" aria-label="Start" {...bindEmulatorButton('start')}>
+              START
+            </button>
+          </div>
+
+          <div className="ngp-skin__ab">
+            <button className="ngp-skin__btn ngp-skin__btn--b" aria-label="B" {...bindEmulatorButton('b')}>
+              B
+            </button>
+            <button className="ngp-skin__btn ngp-skin__btn--a" aria-label="A" {...bindEmulatorButton('a')}>
+              A
+            </button>
+          </div>
+        </div>
+
+        <div className="ngp-skin__footer" aria-hidden="true">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <span key={i} className="ngp-skin__speaker-hole" />
+          ))}
+        </div>
       </div>
     </div>
   );
