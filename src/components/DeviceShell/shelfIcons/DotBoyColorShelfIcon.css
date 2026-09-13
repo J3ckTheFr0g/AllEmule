@@ -1,6 +1,7 @@
 .dotBoyColorShelf-case {
   position: relative;
-  width: 100%;
+  height: 100%;
+  width: auto;
   aspect-ratio: 280 / 430;
   border-radius: 14px 14px 26px 14px;
   background: linear-gradient(155deg, #9d5ce0 0%, #7a3cc4 45%, #5c249e 100%);

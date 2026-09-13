@@ -1,6 +1,7 @@
 .ngpShelf-case {
   position: relative;
-  width: 100%;
+  height: 100%;
+  width: auto;
   aspect-ratio: 8 / 9;
   border-radius: 10px;
   background: linear-gradient(160deg, #f4f4f2 0%, #dedfdc 45%, #c5c6c3 100%);

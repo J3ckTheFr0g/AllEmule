@@ -1,102 +1,110 @@
-import type { CSSProperties } from 'react';
 import { CONSOLE_DISPLAY_NAMES, ConsoleType } from '../../models/consoleTypes';
 import { CONSOLE_SKINS } from './skins';
 import { SHELF_ICON_OVERRIDES } from './shelfIcons';
-import { SKIN_DESIGN_SIZE } from './skinDesignSizes';
 import './ConsoleStand.css';
 
-/** Consoles jouables affichees dans le stand, dans un ordre de sortie approximatif. */
-const STAND_CONSOLES: ConsoleType[] = [
-  ConsoleType.GameBoy,
-  ConsoleType.GameBoyColor,
-  ConsoleType.AtariLynx,
-  ConsoleType.SegaGameGear,
-  ConsoleType.NeoGeoPocket,
-  ConsoleType.PcEngineGt,
-  ConsoleType.GameBoyAdvance,
-  ConsoleType.GameBoyAdvanceSp,
+interface ShelfEntry {
+  type: ConsoleType;
+  /** true = boitier paysage, incline en arriere comme pose contre le mur (cf reference). */
+  tilt: boolean;
+}
+
+/**
+ * Regroupement par etagere, dans l'esprit de la reference utilisateur
+ * (3 etageres en bois superposees) : rangee du haut = petits boitiers
+ * paysage/exotiques, rangee du milieu = duo Game Boy/Color portrait,
+ * rangee du bas = Advance/SP/Lynx.
+ */
+const SHELF_ROWS: ShelfEntry[][] = [
+  [
+    { type: ConsoleType.SegaGameGear, tilt: true },
+    { type: ConsoleType.NeoGeoPocket, tilt: false },
+    { type: ConsoleType.PcEngineGt, tilt: false },
+  ],
+  [
+    { type: ConsoleType.GameBoy, tilt: false },
+    { type: ConsoleType.GameBoyColor, tilt: false },
+  ],
+  [
+    { type: ConsoleType.GameBoyAdvance, tilt: true },
+    { type: ConsoleType.GameBoyAdvanceSp, tilt: true },
+    { type: ConsoleType.AtariLynx, tilt: true },
+  ],
 ];
 
 export interface ConsoleStandProps {
   onSelect: (console: ConsoleType) => void;
 }
 
-/** Ecran d'un boitier au repos sur l'etagere (pas de jeu, pas d'interaction). */
 function IdleScreen() {
   return <div className="console-stand__idle-screen" />;
 }
 
 /**
- * Ecran d'accueil : une etagere de chambre d'ado fin-90s, avec le vrai
- * skin de chaque console jouable pose dessus (rendu en miniature). Chaque
- * mini-skin est explicitement dimensionne a sa taille de reference
- * (SKIN_DESIGN_SIZE, memes valeurs que le rendu plein ecran dans
- * DeviceShell) puis reduit via `transform: scale()` calcule pour tenir
- * dans une case fixe de 78x78px - volontairement PAS de pourcentages en
- * cascade sur plusieurs niveaux (largeur/hauteur "auto" d'un skin a
- * l'interieur d'un parent lui-meme "auto" ne se contraint pas de façon
- * fiable, c'est ce qui faisait exploser la mise en page precedente en
- * une colonne de cases pleine largeur).
+ * Ecran d'accueil : etagere en bois a 3 niveaux fixee sur un mur
+ * d'ambiance chambre d'ado fin-90s (guirlande lumineuse, silhouettes
+ * d'affiches abstraites - pas de vraies pochettes/logos de groupes, voir
+ * commentaire dans ConsoleStand.css), avec chaque console dans ses vraies
+ * proportions (pas ecrasee en carre) et une legere inclinaison pour les
+ * boitiers paysage, comme posee debout contre le mur.
  *
- * Certaines consoles ont une icone d'etagere DEDIEE (SHELF_ICON_OVERRIDES,
- * voir shelfIcons/) plutot qu'une version reduite de leur skin de jeu :
- * utile quand le skin de jeu adopte un style different (ex: "coque de
- * telephone" portrait pour la Game Gear) de l'apparence authentique
- * attendue ici pour une reconnaissance immediate. Les autres consoles
- * utilisent par defaut leur skin de jeu reduit, ce qui reste correct
- * pour elles (Dot Boy, Dot Boy Color, Dot Boy Advance...).
- *
- * La racine de chaque tuile est un <div role="button"> (pas un <button>) :
- * les skins de jeu rendent eux-memes de vrais <button> internes (D-pad,
- * A/B...), et le HTML interdit d'imbriquer des elements interactifs.
- * `pointer-events: none` sur le mini-skin fait remonter le clic au
- * wrapper de la tuile plutot que d'activer ses boutons internes.
+ * Chaque console utilise son icone d'etagere dediee (SHELF_ICON_OVERRIDES,
+ * voir shelfIcons/) ; a defaut, retombe sur une version reduite de son
+ * skin de jeu (CONSOLE_SKINS) - ne devrait plus arriver, les 8 consoles
+ * jouables ont toutes une icone dediee.
  */
 export function ConsoleStand({ onSelect }: ConsoleStandProps) {
   return (
     <div className="console-stand">
+      <div className="console-stand__wall">
+        <div className="console-stand__lights" aria-hidden="true">
+          {Array.from({ length: 14 }).map((_, i) => (
+            <span key={i} />
+          ))}
+        </div>
+        <div className="console-stand__posters" aria-hidden="true">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <span key={i} className={`console-stand__poster console-stand__poster--${i}`} />
+          ))}
+        </div>
+      </div>
+
       <p className="console-stand__title">Choisis une console</p>
-      <div className="console-stand__shelf">
-        {STAND_CONSOLES.map((type) => {
-          const ShelfIcon = SHELF_ICON_OVERRIDES[type];
-          const Skin = CONSOLE_SKINS[type];
-          const design = SKIN_DESIGN_SIZE[type];
-          return (
-            <div
-              key={type}
-              role="button"
-              tabIndex={0}
-              className="console-stand__tile"
-              onClick={() => onSelect(type)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') onSelect(type);
-              }}
-            >
-              <div className="console-stand__preview">
-                {ShelfIcon ? (
-                  <div className="console-stand__preview-icon">
-                    <ShelfIcon />
-                  </div>
-                ) : (
-                  Skin && (
-                    <div
-                      className="console-stand__preview-skin"
-                      style={
-                        {
-                          '--design-w': `${design.width}px`,
-                          '--design-h': `${design.height}px`,
-                        } as CSSProperties
-                      }
-                    >
-                      <Skin screenContent={<IdleScreen />} />
+
+      <div className="console-stand__bookcase">
+        {SHELF_ROWS.map((row, rowIndex) => (
+          <div className="console-stand__row" key={rowIndex}>
+            <div className="console-stand__items">
+              {row.map(({ type, tilt }) => {
+                const ShelfIcon = SHELF_ICON_OVERRIDES[type];
+                const Skin = CONSOLE_SKINS[type];
+                return (
+                  <div
+                    key={type}
+                    role="button"
+                    tabIndex={0}
+                    className="console-stand__item"
+                    onClick={() => onSelect(type)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') onSelect(type);
+                    }}
+                  >
+                    <div className={`console-stand__figure ${tilt ? 'console-stand__figure--tilt' : ''}`}>
+                      {ShelfIcon ? (
+                        <ShelfIcon />
+                      ) : (
+                        Skin && <Skin screenContent={<IdleScreen />} />
+                      )}
                     </div>
-                  )
-                )}
-              </div>
-              <span className="console-stand__label">{CONSOLE_DISPLAY_NAMES[type]}</span>
+                    <div className="console-stand__shadow" />
+                    <span className="console-stand__label">{CONSOLE_DISPLAY_NAMES[type]}</span>
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
+            <div className="console-stand__plank" />
+          </div>
+        ))}
       </div>
     </div>
   );
