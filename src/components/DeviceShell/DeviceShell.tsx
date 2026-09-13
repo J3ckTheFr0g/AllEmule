@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { useDeviceStateMachine } from '../../hooks/useDeviceStateMachine';
 import { readRomFile } from '../../detection/consoleDetector';
 import { AmbiguousRomError } from '../../detection/consoleDetector';
@@ -18,6 +19,25 @@ const ANIM_DURATIONS_MS = {
   morph: 700,
   powerOn: 1200,
   powerOff: 500,
+};
+
+/**
+ * Taille de reference (design pixel-perfect) de chaque skin, utilisee par
+ * `.device-shell__skin-scale` (DeviceShell.css) pour l'agrandir/reduire en
+ * un seul bloc jusqu'a remplir l'ecran sans bandes noires ni deformer les
+ * proportions internes (D-pad, boutons...). Doit correspondre a la
+ * largeur/aspect-ratio fixes dans le CSS `__case` de chaque skin. Les
+ * skins deja fluides en interne (PC Engine GT, Neo Geo Pocket - a revoir
+ * avec de nouveaux visuels prochainement) n'ont pas d'entree ici et
+ * gardent leur propre mise a l'echelle vw.
+ */
+const SKIN_DESIGN_SIZE: Partial<Record<ConsoleType, { width: number; height: number }>> = {
+  [ConsoleType.GameBoy]: { width: 280, height: 460 },
+  [ConsoleType.GameBoyColor]: { width: 280, height: 430 },
+  [ConsoleType.GameBoyAdvance]: { width: 480, height: 260 },
+  [ConsoleType.GameBoyAdvanceSp]: { width: 420, height: 300 },
+  [ConsoleType.AtariLynx]: { width: 480, height: 280 },
+  [ConsoleType.SegaGameGear]: { width: 460, height: 288 },
 };
 
 export function DeviceShell() {
@@ -320,6 +340,9 @@ export function DeviceShell() {
     </div>
   );
 
+  const designSize = displayConsole ? SKIN_DESIGN_SIZE[displayConsole] : undefined;
+  const skinElement = SkinComponent ? <SkinComponent screenContent={innerContent} /> : null;
+
   return (
     <div className={`device-shell ${orientationClass}`}>
       {errorMessage && <div className="device-shell__error">{errorMessage}</div>}
@@ -337,8 +360,20 @@ export function DeviceShell() {
               consoleName={CONSOLE_DISPLAY_NAMES[displayConsole]}
               onDismiss={() => machine.cancelUnsupportedConsole()}
             />
-          ) : SkinComponent ? (
-            <SkinComponent screenContent={innerContent} />
+          ) : skinElement && designSize ? (
+            <div
+              className="device-shell__skin-scale"
+              style={
+                {
+                  '--design-w': `${designSize.width}px`,
+                  '--design-h': `${designSize.height}px`,
+                } as CSSProperties
+              }
+            >
+              {skinElement}
+            </div>
+          ) : skinElement ? (
+            skinElement
           ) : (
             innerContent
           )}
