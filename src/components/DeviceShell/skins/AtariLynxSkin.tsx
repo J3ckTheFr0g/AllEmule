@@ -1,14 +1,20 @@
 import type { SkinProps } from './SkinProps';
 import { bindEmulatorButton } from '../../../utils/emulatorInput';
+import { useViewportOrientation } from '../../../hooks/useViewportOrientation';
 import { DpadHitzones } from './DpadHitzones';
 import './AtariLynxSkin.css';
 
 /**
  * Skin CSS/SVG imitant un handheld couleur massif dans l'esprit de
- * l'Atari Lynx (1989) : chassis horizontal massif, ecran large a gauche,
- * croix directionnelle + boutons Option 1 / Option 2 / Pause a droite.
- * Pas d'image externe : uniquement gradients, formes et un SVG inline
- * pour le logo.
+ * l'Atari Lynx (1989). Le boitier reel est en paysage, mais - comme
+ * illustre par la reference "Horizon Skins" fournie - une meme console
+ * peut se decliner en tenue portrait (ecran en haut, croix/boutons en
+ * bas) ou paysage (ecran a gauche, croix/boutons a droite) : ce skin lit
+ * l'orientation REELLE du telephone (useViewportOrientation, distincte de
+ * l'orientation figee de la console dans CONSOLE_SPECS) et bascule sa
+ * mise en page en consequence, sans dupliquer ses elements internes
+ * (memes divs, juste reordonnes/reempiles via CSS selon
+ * `.lynx-skin--portrait`).
  *
  * Marque fictive "WILDCAT" (voir CONSOLE_DISPLAY_NAMES) : la forme et les
  * proportions rendent hommage au boitier reel, mais aucun nom ni logo
@@ -19,8 +25,16 @@ import './AtariLynxSkin.css';
  * attendant l'asset binaire reel.
  */
 export function AtariLynxSkin({ screenContent }: SkinProps) {
+  const viewportOrientation = useViewportOrientation();
+  const isPortrait = viewportOrientation === 'portrait';
+
   return (
-    <div className="lynx-skin" data-rive-slot="lynx.riv" role="img" aria-label="Wildcat">
+    <div
+      className={`lynx-skin ${isPortrait ? 'lynx-skin--portrait' : ''}`}
+      data-rive-slot="lynx.riv"
+      role="img"
+      aria-label="Wildcat"
+    >
       <div className="lynx-skin__body">
         <div className="lynx-skin__screen-bay">
           <div className="lynx-skin__screen-bezel">
